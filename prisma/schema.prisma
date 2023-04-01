@@ -11,32 +11,32 @@ datasource db {
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  blocked Boolean @default(false)
-  created_at DateTime
-  email String @unique
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  blocked        Boolean   @default(false)
+  created_at     DateTime
+  email          String    @unique
   email_verified Boolean
-  family_name String
-  given_name String
-  last_ip String
-  last_login DateTime
-  logins_count Int
-  name String
-  nickname String
-  phone_number String
-  phone_verified Boolean @default(false)
-  picture String
-  updated_at DateTime
-  user_id String @unique
-  username String @unique
-  follower Follows[] @relation("follower")
-  following Follows[] @relation("following")
+  family_name    String
+  given_name     String
+  last_ip        String
+  last_login     DateTime
+  logins_count   Int
+  name           String
+  nickname       String
+  phone_number   String
+  phone_verified Boolean   @default(false)
+  picture        String
+  updated_at     DateTime
+  user_id        String    @unique
+  username       String    @unique
+  follower       Follows[] @relation("follower")
+  following      Follows[] @relation("following")
 }
 
 model Follows {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  followedBy User @relation("follower", fields: [followedById], references: [id])
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  followedBy   User   @relation("follower", fields: [followedById], references: [id])
   followedById String @unique
-  following User @relation("following", fields: [followingId], references: [id])
-  followingId String
+  following    User   @relation("following", fields: [followingId], references: [id])
+  followingId  String
 }
