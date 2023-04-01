@@ -12,7 +12,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   return data;
 }
 
-export default function Page() {
+export default function Category() {
   const data = useLoaderData<typeof loader>();
   return();
 }
