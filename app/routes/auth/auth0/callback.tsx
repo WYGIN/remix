@@ -1,5 +1,5 @@
 // app/routes/auth/auth0/callback.tsx
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/cloudflare";
 
 import { authenticator } from "~/utils/auth.server";
 
