@@ -1,7 +1,7 @@
 // app/routes/auth/logout.ts
 import type { ActionArgs } from "@remix-run/cloudflare";
 
-import { redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/cloudflare";
 
 import { destroySession, getSession } from "~/utils/auth.server";
 
