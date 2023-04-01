@@ -29,7 +29,7 @@ model User {
   updated_at DateTime
   user_id String @unique
   username String @unique
-  follows Follows @unique
+  follows Follows
 }
 
 model Follows {
