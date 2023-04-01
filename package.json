@@ -3,11 +3,8 @@
   "sideEffects": false,
   "scripts": {
     "build": "npm run build:css && remix build",
-
     "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
-
     "dev": "concurrently \"npm run dev:css\" \"remix dev\"",
-
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
     "dev:remix": "remix watch",
     "dev:wrangler": "cross-env NODE_ENV=development npm run wrangler",
@@ -35,6 +32,7 @@
     "eslint": "^8.27.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.21",
+    "prisma": "^4.12.0",
     "tailwindcss": "^3.3.1",
     "typescript": "^4.8.4",
     "wrangler": "^2.2.1"
