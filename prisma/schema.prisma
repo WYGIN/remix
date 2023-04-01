@@ -40,3 +40,85 @@ model Follows {
   following    User   @relation("following", fields: [followingId], references: [id])
   followingId  String
 }
+
+model Post {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  title         String @unique
+  body          String @unique
+  slug          String @unique
+  description   String @unique
+  featuredImage String @unique
+  category1 Category
+  category2 Category
+  tags TagsOnPost
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  schema Json @unique
+  author UserOnPosts
+  status Status @default(PUBLISHED)
+  like Like @default(NONE)
+  feedback Feedback[] @default([])
+  comments CommentsOnPost
+}
+
+model Page {
+  
+}
+
+model Category {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  slug String @unique
+  description String @unique
+  logo String @unique
+}
+
+model TagsOnPost {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  post Post
+  tags Tag[] @default([])
+}
+
+model Tag {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  slug String @unique
+  description String @unique
+  logo String @unique
+}
+
+model UserOnPost {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  user User
+  posts Post?
+}
+
+model Feedback {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  user User
+  feedback String
+  rating Int
+}
+
+model CommentsOnPost {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  comments Comment[]
+}
+
+model Comment {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  comment String
+  user User
+  repliedTo Comment? @relation("repliedTo")
+}
+
+enum Like {
+  LIKED
+  DISLIKED
+  NONE
+}
+
+enum Status {
+  PUBLISHED
+  DRAFT
+}
