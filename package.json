@@ -2,10 +2,15 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "remix build",
+    "build": "npm run build:css && remix build",
+
+    "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
+
+    "dev": "concurrently \"npm run dev:css\" \"remix dev\"",
+
+    "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css"
     "dev:remix": "remix watch",
     "dev:wrangler": "cross-env NODE_ENV=development npm run wrangler",
-    "dev": "npm-run-all build --parallel \"dev:*\"",
     "start": "cross-env NODE_ENV=production npm run wrangler",
     "typecheck": "tsc",
     "wrangler": "wrangler pages dev ./public"
