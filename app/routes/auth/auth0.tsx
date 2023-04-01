@@ -1,5 +1,5 @@
 // app/routes/auth/auth0.tsx
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/cloudflare";
 
 import { authenticator } from "~/utils/auth.server";
 
