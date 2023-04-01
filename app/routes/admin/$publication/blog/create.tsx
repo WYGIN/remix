@@ -3,7 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 
 export async function action({ request }: ActionArgs) {
   const data = await request.formData();
-  const prisma = await prisma.publication.upsert({
+  const prisma = await prisma.blog.upsert({
     where: {
       slug: data.get('slug')
     },
