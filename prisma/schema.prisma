@@ -29,11 +29,14 @@ model User {
   updated_at DateTime
   user_id String @unique
   username String @unique
-  follows Follows
+  follower Follows[] @relation("follower")
+  following Follows[] @relation("following")
 }
 
 model Follows {
-  followedBy User @relation(fields: [followedById], references: [id])
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  followedBy User @relation("follower", fields: [followedById], references: [id])
   followedById String @unique
-  following User[]
+  following User @relation("following", fields: [followingId], references: [id])
+  followingId String
 }
