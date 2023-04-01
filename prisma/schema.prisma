@@ -62,7 +62,21 @@ model Post {
 }
 
 model Page {
-  
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  title         String @unique
+  body          String @unique
+  slug          String @unique
+  description   String @unique
+  featuredImage String @unique
+  tags TagsOnPage
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  schema Json @unique
+  author UserOnPages
+  status Status @default(PUBLISHED)
+  like Like @default(NONE)
+  feedback Feedback[] @default([])
+  comments CommentsOnPage
 }
 
 model Category {
@@ -79,6 +93,18 @@ model TagsOnPost {
   tags Tag[] @default([])
 }
 
+model TagsOnPage {
+ id            String @id @default(auto()) @map("_id") @db.ObjectId
+ page Page
+ tags Tag[] @default([])
+}
+
+model TagsOnBlog {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  blog Blog
+  tags Tag[] @default([])
+}
+
 model Tag {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -90,7 +116,19 @@ model Tag {
 model UserOnPost {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   user User
-  posts Post?
+  post Post
+}
+
+model UserOnPage {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  user User
+  page Page
+}
+
+model UserOnBlog {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  user User
+  blog Blog
 }
 
 model Feedback {
@@ -102,6 +140,11 @@ model Feedback {
 
 model CommentsOnPost {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
+  comments Comment[]
+}
+
+model CommentOnBlog {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
   comments Comment[]
 }
 
