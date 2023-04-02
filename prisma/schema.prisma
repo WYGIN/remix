@@ -339,6 +339,8 @@ model Comment {
   comment String
   user User
   repliedTo Comment? @relation("repliedTo")
+  commentRel Comment @relation("repliedTo", fields: [commentRelId], references: [id])
+  commentRelId String @db.ObjectId @unique
 }
 
 model PostsOnTaxonomy {
