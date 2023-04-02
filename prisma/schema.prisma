@@ -59,7 +59,8 @@ model Post {
   slug                          String                       @unique
   description                   String                       @unique
   featuredImage                 String                       @unique
-  taxonomy                      Taxonomy                     @relation(fields: [taxonomyId], references: [id])                      @unique
+  taxonomy                      Taxonomy                     @relation(fields: [taxonomyId], references: [id])
+  taxonomyId    BigInt @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
   schema                        Json                         @db.JsonB
