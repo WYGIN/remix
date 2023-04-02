@@ -163,7 +163,7 @@ model HeaderItem {
   slug String @unique
   description String? @unique
   items HeaderItem[] @relation("child items")
-  itemsRel HeaderItem @relation(fields: [itemsRelId], references: [id])
+  itemsRel HeaderItem @relation("child items", fields: [itemsRelId], references: [id])
   itemsRelId String @db.ObjectId
 }
 
@@ -173,7 +173,7 @@ model FooterItem {
   slug String @unique
   description String? @unique
   items FooterItem[] @relation("child items")
-  itemsRel FooterItem @relation(fields: [itemsRelId], references: [id])
+  itemsRel FooterItem @relation("child items", fields: [itemsRelId], references: [id])
   itemsRelId String @db.ObjectId
 }
 
