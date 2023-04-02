@@ -53,7 +53,6 @@ model Post {
   description   String @unique
   featuredImage String @unique
   taxonomy Taxonomy
-  tags TagsOnPost @relation(fields: [tagsId], references: [id])
   tagsId String @db.ObjectId @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,7 +71,6 @@ model Page {
   slug          String @unique
   description   String @unique
   featuredImage String @unique
-  tags TagsOnPage @relation(fields: [tagsId], references: [id])
   tagsId String @db.ObjectId @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -90,7 +88,6 @@ model Blog {
   slug          String @unique
   description   String @unique
   featuredImage String @unique
-  tags TagsOnBlog @relation(fields: [tagsId], references: [id])
   tagsId String @db.ObjectId @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -163,7 +160,7 @@ model HeaderItem {
   slug String @unique
   description String? @unique
   items HeaderItem[] @relation("child items")
-  itemsRel HeaderItem @relation("child items", fields: [itemsRelId], references: [id])
+  itemsRel HeaderItem @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   itemsRelId String @db.ObjectId
 }
 
@@ -173,7 +170,7 @@ model FooterItem {
   slug String @unique
   description String? @unique
   items FooterItem[] @relation("child items")
-  itemsRel FooterItem @relation("child items", fields: [itemsRelId], references: [id])
+  itemsRel FooterItem @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   itemsRelId String @db.ObjectId
 }
 
@@ -339,7 +336,7 @@ model Comment {
   comment String
   user User
   repliedTo Comment? @relation("repliedTo")
-  commentRel Comment @relation("repliedTo", fields: [commentRelId], references: [id])
+  commentRel Comment @relation("repliedTo", fields: [commentRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   commentRelId String @db.ObjectId @unique
 }
 
