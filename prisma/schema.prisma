@@ -63,7 +63,7 @@ model Post {
   tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
-  schema                        Json                         @db.JsonB
+  schema                        String                       @unique
   author                        PostsOnProfile               @relation(fields: [postsOnProfileId], references: [id])
   status                        Status                       @default(PUBLISHED)
   like                          Like                         @default(NONE)
@@ -95,7 +95,7 @@ model Page {
   tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
-  schema                        Json                         @db.JsonB
+  schema                        String                       @unique
   author                        PagesOnProfile               @relation(fields: [pagesOnProfileId], references: [id])
   status                        Status                       @default(PUBLISHED)
   like                          Like                         @default(NONE)
@@ -119,7 +119,7 @@ model Blog {
   tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
-  schema                        Json                         @db.JsonB
+  schema                        String                       @unique
   author                        BlogsOnProfile               @relation(fields: [blogsOnProfileId], references: [id])
   status                        Status                       @default(PUBLISHED)
   like                          Like                         @default(NONE)
