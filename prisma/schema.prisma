@@ -39,9 +39,9 @@ model User {
 model Follows {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   followedBy   User   @relation("follower", fields: [followedById], references: [id])
-  followedById String @unique
+  followedById String @db.ObjectId
   following    User   @relation("following", fields: [followingId], references: [id])
-  followingId  String
+  followingId  String @db.ObjectId
   @@unique([followedById, followingId])
 }
 
@@ -53,7 +53,8 @@ model Post {
   description   String @unique
   featuredImage String @unique
   taxonomy Taxonomy
-  tags TagsOnPost
+  tags TagsOnPost @relation(fields: [tagsId], references: [id])
+  tagsId String @db.ObjectId @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   schema Json @unique
@@ -71,7 +72,8 @@ model Page {
   slug          String @unique
   description   String @unique
   featuredImage String @unique
-  tags TagsOnPage
+  tags TagsOnPage @relation(fields: [tagsId], references: [id])
+  tagsId String @db.ObjectId @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   schema Json @unique
@@ -88,7 +90,8 @@ model Blog {
   slug          String @unique
   description   String @unique
   featuredImage String @unique
-  tags TagsOnBlog
+  tags TagsOnBlog @relation(fields: [tagsId], references: [id])
+  tagsId String @db.ObjectId @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   schema Json @unique
@@ -96,7 +99,6 @@ model Blog {
   status Status @default(PUBLISHED)
   like Like @default(NONE)
   feedback Feedback[]
-  comments CommentsOnBlog
 }
 
 model Taxonomy {
@@ -131,7 +133,6 @@ model Profile {
   blogsContributed ContributedOnBlogsByProfile?
   tagsCreated TagsCreatedByProfile?
   taxonomiesCreated TaxonomiesCreatedByProfile?
-  user User @relation(fields: [userId], references: [id])
   userId String @db.ObjectId @unique
   socialAccounts SocialAccountsOnProfile?
 }
@@ -162,6 +163,8 @@ model HeaderItem {
   slug String @unique
   description String? @unique
   items HeaderItem[] @relation("child items")
+  itemsRel HeaderItem @relation(fields: [itemsRelId], references: [id])
+  itemsRelId String @db.ObjectId
 }
 
 model FooterItem {
@@ -170,6 +173,8 @@ model FooterItem {
   slug String @unique
   description String? @unique
   items FooterItem[] @relation("child items")
+  itemsRel FooterItem @relation(fields: [itemsRelId], references: [id])
+  itemsRelId String @db.ObjectId
 }
 
 model PostsByPublication {
@@ -203,67 +208,78 @@ model RolesOnPublicationByProfile {
 
 model PostsOnProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   posts Post[]
 }
 
 model PagesOnProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   pages Page[]
 }
 
 model BlogsOnProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   blogs Blog[]
 }
 
 model ContributedOnPostsByProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   posts Post[]
 }
 
 model ContributedOnPagesByProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   pages Page[]
 }
 
 model ContributedOnBlogsByProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   blogs Blog[]
 }
 
 model TagsOnPost {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  post Post
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId @unique
   tags Tag[]
 }
 
 model TagsOnPage {
  id            String @id @default(auto()) @map("_id") @db.ObjectId
- page Page
+ page Page @relation(fields: [pageId], references: [id])
+ pageId String @db.ObjectId @unique
  tags Tag[]
 }
 
 model TagsOnBlog {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  blog Blog
+  blog Blog @relation(fields: [blogId], references: [id])
+  blogId String @db.ObjectId @unique
   tags Tag[]
 }
 
 model TagsCreatedByProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   tags Tag[]
 }
 
 model TaxonomiesCreatedByProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
   taxonomies Taxonomy[]
 }
 
@@ -277,25 +293,29 @@ model Tag {
 
 model UserOnPost {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  user User
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId @unique
   post Post
 }
 
 model UserOnPage {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  user User
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId @unique
   page Page
 }
 
 model UserOnBlog {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  user User
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId @unique
   blog Blog
 }
 
 model Feedback {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  user User
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId @unique
   feedback String
   rating Int
 }
