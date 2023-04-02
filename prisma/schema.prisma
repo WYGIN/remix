@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id             BigInt            @id @default(sequence())
+  id             BigInt      @id @default(sequence())
   blocked        Boolean     @default(false)
   created_at     DateTime
   email          String      @unique
@@ -60,7 +60,7 @@ model Post {
   description                   String                       @unique
   featuredImage                 String                       @unique
   taxonomy                      Taxonomy                     @relation(fields: [taxonomyId], references: [id])
-  tagsId                        BigInt                       @unique 
+  tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
   schema                        Json                         @unique
@@ -69,18 +69,18 @@ model Post {
   like                          Like                         @default(NONE)
   feedback                      Feedback[]
   comments                      CommentsOnPost?
-  taxonomyId                    BigInt                       
-  postsOnProfileId              BigInt                       
+  taxonomyId                    BigInt
+  postsOnProfileId              BigInt
   PostsByPublication            PostsByPublication?          @relation(fields: [postsByPublicationId], references: [id])
-  postsByPublicationId          BigInt?                      
+  postsByPublicationId          BigInt?
   ContributedOnPostsByProfile   ContributedOnPostsByProfile? @relation(fields: [contributedOnPostsByProfileId], references: [id])
-  contributedOnPostsByProfileId BigInt?                      
+  contributedOnPostsByProfileId BigInt?
   TagsOnPost                    TagsOnPost?
   UserOnPost                    UserOnPost[]
   PostsOnTaxonomy               PostsOnTaxonomy?             @relation(fields: [postsOnTaxonomyId], references: [id])
-  postsOnTaxonomyId             BigInt?                      
+  postsOnTaxonomyId             BigInt?
   PostsOnBookmark               PostsOnBookmark?             @relation(fields: [postsOnBookmarkId], references: [id])
-  postsOnBookmarkId             BigInt?                      
+  postsOnBookmarkId             BigInt?
 }
 
 model Page {
@@ -90,7 +90,7 @@ model Page {
   slug                          String                       @unique
   description                   String                       @unique
   featuredImage                 String                       @unique
-  tagsId                        BigInt                       @unique 
+  tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
   schema                        Json                         @unique
@@ -98,9 +98,9 @@ model Page {
   status                        Status                       @default(PUBLISHED)
   like                          Like                         @default(NONE)
   feedback                      Feedback[]
-  pagesOnProfileId              BigInt                       
+  pagesOnProfileId              BigInt
   ContributedOnPagesByProfile   ContributedOnPagesByProfile? @relation(fields: [contributedOnPagesByProfileId], references: [id])
-  contributedOnPagesByProfileId BigInt?                      
+  contributedOnPagesByProfileId BigInt?
   TagsOnPage                    TagsOnPage?
   UserOnPage                    UserOnPage[]
 }
@@ -112,7 +112,7 @@ model Blog {
   slug                          String                       @unique
   description                   String                       @unique
   featuredImage                 String                       @unique
-  tagsId                        BigInt                       @unique 
+  tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
   schema                        Json                         @unique
@@ -120,9 +120,9 @@ model Blog {
   status                        Status                       @default(PUBLISHED)
   like                          Like                         @default(NONE)
   feedback                      Feedback[]
-  blogsOnProfileId              BigInt                       
+  blogsOnProfileId              BigInt
   ContributedOnBlogsByProfile   ContributedOnBlogsByProfile? @relation(fields: [contributedOnBlogsByProfileId], references: [id])
-  contributedOnBlogsByProfileId BigInt?                      
+  contributedOnBlogsByProfileId BigInt?
   TagsOnBlog                    TagsOnBlog?
   UserOnBlog                    UserOnBlog[]
   CommentsOnBlog                CommentsOnBlog?
@@ -131,13 +131,13 @@ model Blog {
 model Taxonomy {
   id                           BigInt                      @id @default(sequence())
   category1                    Category                    @relation("primary category", fields: [category1Id], references: [id])
-  category1Id                  BigInt                      
+  category1Id                  BigInt
   category2                    Category                    @relation("secondary category", fields: [category2Id], references: [id])
-  category2Id                  BigInt                      
+  category2Id                  BigInt
   postsOnTaxonomy              PostsOnTaxonomy?
   Post                         Post[]
   TaxonomiesCreatedByProfile   TaxonomiesCreatedByProfile? @relation(fields: [taxonomiesCreatedByProfileId], references: [id])
-  taxonomiesCreatedByProfileId BigInt?                     
+  taxonomiesCreatedByProfileId BigInt?
 
   @@unique([category1Id, category2Id])
 }
@@ -163,7 +163,7 @@ model Profile {
   blogsContributed            ContributedOnBlogsByProfile?
   tagsCreated                 TagsCreatedByProfile?
   taxonomiesCreated           TaxonomiesCreatedByProfile?
-  userId                      BigInt                       @unique 
+  userId                      BigInt                       @unique
   socialAccounts              SocialAccountsOnProfile?
   User                        User?
   PublicationsByProfile       PublicationsByProfile?
@@ -178,9 +178,9 @@ model Publication {
   logo                        String                       @unique
   roles                       RolesByPublication?          @relation(fields: [rolesByPublicationId], references: [id])
   posts                       PostsByPublication?
-  rolesByPublicationId        BigInt?                      
+  rolesByPublicationId        BigInt?
   PublicationsByProfile       PublicationsByProfile?       @relation(fields: [publicationsByProfileId], references: [id])
-  publicationsByProfileId     BigInt?                      
+  publicationsByProfileId     BigInt?
   RolesOnPublicationByProfile RolesOnPublicationByProfile?
 }
 
@@ -201,9 +201,9 @@ model HeaderItem {
   description String?      @unique
   items       HeaderItem[] @relation("child items")
   itemsRel    HeaderItem   @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  itemsRelId  BigInt       
+  itemsRelId  BigInt
   Header      Header?      @relation(fields: [headerId], references: [id])
-  headerId    BigInt?      
+  headerId    BigInt?
 }
 
 model FooterItem {
@@ -213,22 +213,22 @@ model FooterItem {
   description String?      @unique
   items       FooterItem[] @relation("child items")
   itemsRel    FooterItem   @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  itemsRelId  BigInt       
+  itemsRelId  BigInt
   Footer      Footer?      @relation(fields: [footerId], references: [id])
-  footerId    BigInt?      
+  footerId    BigInt?
 }
 
 model PostsByPublication {
-  id            BigInt            @id @default(sequence())
+  id            BigInt      @id @default(sequence())
   publication   Publication @relation(fields: [publicationId], references: [id])
-  publicationId BigInt      @unique 
+  publicationId BigInt      @unique
   posts         Post[]
 }
 
 model PublicationsByProfile {
   id           BigInt        @id @default(sequence())
   profile      Profile       @relation(fields: [profileId], references: [id])
-  profileId    BigInt        @unique 
+  profileId    BigInt        @unique
   publications Publication[]
 }
 
@@ -241,12 +241,12 @@ model RolesByPublication {
 model RolesOnPublicationByProfile {
   id                   BigInt              @id @default(sequence())
   profile              Profile             @relation(fields: [profileId], references: [id])
-  profileId            BigInt              @unique 
+  profileId            BigInt              @unique
   publication          Publication         @relation(fields: [publicationId], references: [id])
-  publicationId        BigInt              @unique 
+  publicationId        BigInt              @unique
   role                 Role                @default(EDITOR)
   RolesByPublication   RolesByPublication? @relation(fields: [rolesByPublicationId], references: [id])
-  rolesByPublicationId BigInt?             
+  rolesByPublicationId BigInt?
 
   @@unique([profileId, publicationId])
 }
@@ -254,77 +254,77 @@ model RolesOnPublicationByProfile {
 model PostsOnProfile {
   id        BigInt  @id @default(sequence())
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId BigInt  @unique 
+  profileId BigInt  @unique
   posts     Post[]
 }
 
 model PagesOnProfile {
   id        BigInt  @id @default(sequence())
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId BigInt  @unique 
+  profileId BigInt  @unique
   pages     Page[]
 }
 
 model BlogsOnProfile {
   id        BigInt  @id @default(sequence())
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId BigInt  @unique 
+  profileId BigInt  @unique
   blogs     Blog[]
 }
 
 model ContributedOnPostsByProfile {
   id        BigInt  @id @default(sequence())
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId BigInt  @unique 
+  profileId BigInt  @unique
   posts     Post[]
 }
 
 model ContributedOnPagesByProfile {
   id        BigInt  @id @default(sequence())
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId BigInt  @unique 
+  profileId BigInt  @unique
   pages     Page[]
 }
 
 model ContributedOnBlogsByProfile {
   id        BigInt  @id @default(sequence())
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId BigInt  @unique 
+  profileId BigInt  @unique
   blogs     Blog[]
 }
 
 model TagsOnPost {
   id     BigInt @id @default(sequence())
   post   Post   @relation(fields: [postId], references: [id])
-  postId BigInt @unique 
+  postId BigInt @unique
   tags   Tag[]
 }
 
 model TagsOnPage {
   id     BigInt @id @default(sequence())
   page   Page   @relation(fields: [pageId], references: [id])
-  pageId BigInt @unique 
+  pageId BigInt @unique
   tags   Tag[]
 }
 
 model TagsOnBlog {
   id     BigInt @id @default(sequence())
   blog   Blog   @relation(fields: [blogId], references: [id])
-  blogId BigInt @unique 
+  blogId BigInt @unique
   tags   Tag[]
 }
 
 model TagsCreatedByProfile {
   id        BigInt  @id @default(sequence())
   profile   Profile @relation(fields: [profileId], references: [id])
-  profileId BigInt  @unique 
+  profileId BigInt  @unique
   tags      Tag[]
 }
 
 model TaxonomiesCreatedByProfile {
   id         BigInt     @id @default(sequence())
   profile    Profile    @relation(fields: [profileId], references: [id])
-  profileId  BigInt     @unique 
+  profileId  BigInt     @unique
   taxonomies Taxonomy[]
 }
 
@@ -335,64 +335,64 @@ model Tag {
   description            String                @unique
   logo                   String                @unique
   TagsOnPost             TagsOnPost?           @relation(fields: [tagsOnPostId], references: [id])
-  tagsOnPostId           BigInt?               
+  tagsOnPostId           BigInt?
   TagsOnPage             TagsOnPage?           @relation(fields: [tagsOnPageId], references: [id])
-  tagsOnPageId           BigInt?               
+  tagsOnPageId           BigInt?
   TagsOnBlog             TagsOnBlog?           @relation(fields: [tagsOnBlogId], references: [id])
-  tagsOnBlogId           BigInt?               
+  tagsOnBlogId           BigInt?
   TagsCreatedByProfile   TagsCreatedByProfile? @relation(fields: [tagsCreatedByProfileId], references: [id])
-  tagsCreatedByProfileId BigInt?               
+  tagsCreatedByProfileId BigInt?
 }
 
 model UserOnPost {
   id     BigInt @id @default(sequence())
   user   User   @relation(fields: [userId], references: [id])
-  userId BigInt @unique 
+  userId BigInt @unique
   post   Post   @relation(fields: [postId], references: [id])
-  postId BigInt 
+  postId BigInt
 }
 
 model UserOnPage {
   id     BigInt @id @default(sequence())
   user   User   @relation(fields: [userId], references: [id])
-  userId BigInt @unique 
+  userId BigInt @unique
   page   Page   @relation(fields: [pageId], references: [id])
-  pageId BigInt 
+  pageId BigInt
 }
 
 model UserOnBlog {
   id     BigInt @id @default(sequence())
   user   User   @relation(fields: [userId], references: [id])
-  userId BigInt @unique 
+  userId BigInt @unique
   blog   Blog   @relation(fields: [blogId], references: [id])
-  blogId BigInt 
+  blogId BigInt
 }
 
 model Feedback {
   id       BigInt  @id @default(sequence())
   user     User    @relation(fields: [userId], references: [id])
-  userId   BigInt  @unique 
+  userId   BigInt  @unique
   feedback String
   rating   Int
   Post     Post?   @relation(fields: [postId], references: [id])
-  postId   BigInt? 
+  postId   BigInt?
   Page     Page?   @relation(fields: [pageId], references: [id])
-  pageId   BigInt? 
+  pageId   BigInt?
   Blog     Blog?   @relation(fields: [blogId], references: [id])
-  blogId   BigInt? 
+  blogId   BigInt?
 }
 
 model CommentsOnPost {
   id       BigInt    @id @default(sequence())
   post     Post      @relation(fields: [postId], references: [id])
-  postId   BigInt    @unique 
+  postId   BigInt    @unique
   comments Comment[]
 }
 
 model CommentsOnBlog {
   id       BigInt    @id @default(sequence())
   blog     Blog      @relation(fields: [blogId], references: [id])
-  blogId   BigInt    @unique 
+  blogId   BigInt    @unique
   comments Comment[]
 }
 
@@ -402,25 +402,25 @@ model Comment {
   user             User            @relation(fields: [userId], references: [id])
   repliedTo        Comment?        @relation("repliedTo")
   commentRel       Comment         @relation("repliedTo", fields: [commentRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  commentRelId     BigInt          @unique 
+  commentRelId     BigInt          @unique
   CommentsOnPost   CommentsOnPost? @relation(fields: [commentsOnPostId], references: [id])
-  commentsOnPostId BigInt?         
+  commentsOnPostId BigInt?
   CommentsOnBlog   CommentsOnBlog? @relation(fields: [commentsOnBlogId], references: [id])
-  commentsOnBlogId BigInt?         
-  userId           BigInt          
+  commentsOnBlogId BigInt?
+  userId           BigInt
 }
 
 model PostsOnTaxonomy {
   id         BigInt   @id @default(sequence())
   taxonomy   Taxonomy @relation(fields: [taxonomyId], references: [id])
-  taxonomyId BigInt   @unique 
+  taxonomyId BigInt   @unique
   posts      Post[]
 }
 
 model SocialAccountsOnProfile {
   id             BigInt          @id @default(sequence())
   profile        Profile         @relation(fields: [profileId], references: [id])
-  profileId      BigInt          @unique 
+  profileId      BigInt          @unique
   socialAccounts SocialAccount[]
 }
 
@@ -429,7 +429,7 @@ model SocialAccount {
   socialPlatform            SocialPlatform
   username                  String
   SocialAccountsOnProfile   SocialAccountsOnProfile? @relation(fields: [socialAccountsOnProfileId], references: [id])
-  socialAccountsOnProfileId BigInt?                  
+  socialAccountsOnProfileId BigInt?
 
   @@unique([socialPlatform, username])
 }
@@ -437,9 +437,9 @@ model SocialAccount {
 model Bookmark {
   id                BigInt           @id @default(sequence())
   user              User             @relation(fields: [userId], references: [id])
-  userId            BigInt           @unique 
+  userId            BigInt           @unique
   posts             PostsOnBookmark? @relation(fields: [postsOnBookmarkId], references: [id])
-  postsOnBookmarkId BigInt?          @unique 
+  postsOnBookmarkId BigInt?          @unique
 }
 
 model PostsOnBookmark {
