@@ -2,3 +2,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  main > div > h1 {
+    @apply relative pr-[62px] text-4xl font-extrabold [scroll-margin-top: 92px] my-[10px] block [margin-block-start: 0.67em] [margin-block-end: 0.67em] tracking-[0.2px];
+  }
+  main > div > p {
+    @apply mb-4 block text-lg [scroll-margin-top: 92px] [margin-block-start: 1em] [margin-block-end: 1em] break-words;
+  }
+  main > div > h2 {
+    @apply relative pr-[62px] text-2xl font-bold tracking-[0.1px] mt-10 mb-1 [margin-block-star: 0.83em] [margin-block-end: 0.83em];
+  }
+  main > div > ol {
+    @apply mb-4 text-lg break-words;
+  }
+  main > div > ol > li {
+    @apply mb-1;
+  }
+  main > div > h3 {
+    @apply relative pr-[62px] text-xl font-semibold mt-6 mb-2;
+  }
+  main > div > img {
+    @apply relative my-4 mx-auto p-4 rounded-[10px] border border-[#E0E3E7];
+  }
+  main > div > code {
+    @apply [direction: ltr] relative text-[10px] leading-[1.5625rem] text-[#1A2027];
+  }
+  main > div > code > pre {
+    @apply my-4 mx-auto p-4 text-[#F8F8F2] bg-[#001E3C] rounded-[10px] border border-[#132F4C] text-[0.8125rem] max-w-[cal(100vw - 32px)] max-h-[400px];
+  }
+  main > div > code > button {
+    @apply min-w-[64px] hidden bg-[#173a5e80] absolute top-2 right-2 text-[0.8125rem] py-1 px-2 border-1 border border-[#1E4976] text-[E2EDF8] font-medium;
+  }
+  main > div > code > button > span {
+    @apply absolute left-[50%] top-[100%] min-w-[100%] mt-1 text-[0.8125rem] font-medium;
+  }
+  main > div > ul {
+    @apply pl-[30px] mb-4 text-[#1A2027] text-lg;
+  }
+  main > div > ul > li {
+    @apply mb-1;
+  }
+  main > div > hr {
+    @apply border-[#E7EBF0];
+  }
+}
