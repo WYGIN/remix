@@ -31,6 +31,9 @@ model User {
   username       String    @unique
   follower       Follows[] @relation("follower")
   following      Follows[] @relation("following")
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
+  role Role @default(USER)
 } 
 
 model Follows {
@@ -39,6 +42,7 @@ model Follows {
   followedById String @unique
   following    User   @relation("following", fields: [followingId], references: [id])
   followingId  String
+  @@unique([followedById, followingId])
 }
 
 model Post {
@@ -48,8 +52,7 @@ model Post {
   slug          String @unique
   description   String @unique
   featuredImage String @unique
-  category1 Category
-  category2 Category
+  taxonomy Taxonomy
   tags TagsOnPost
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,12 +82,156 @@ model Page {
   comments CommentsOnPage
 }
 
+model Blog {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  title         String @unique
+  body          String @unique
+  slug          String @unique
+  description   String @unique
+  featuredImage String @unique
+  tags TagsOnBlog
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  schema Json @unique
+  author UserOnBlog
+  status Status @default(PUBLISHED)
+  like Like @default(NONE)
+  feedback Feedback[] @default([])
+  comments CommentsOnBlog
+}
+
+model Taxonomy {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  category1 Category @relation("primary category")
+  category2 Category @relation("secondary category")
+  postsOnTaxonomy PostsOnTaxonomy?
+}
+
 model Category {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   name String @unique
   slug String @unique
   description String @unique
   logo String @unique
+}
+
+model Profile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  bio String @unique
+  postsCreated PostsOnProfile?
+  pagesCreated PagesOnProfile?
+  blogsCreated BlogsOnProfile?
+  postsContributed ContributedOnPostsByProfile?
+  pagesContributed ContributedOnPagesByProfile?
+  blogsContributed ContributedOnBlogsByProfile?
+  tagsCreated TagsCreatedByProfile?
+  taxonomiesCreated TaxonomiesCreatedByProfile?
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId @unique
+  socialAccounts SocialAccountsOnProfile?
+}
+
+model Publication {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  slug String @unique
+  description String @unique
+  logo String @String @unique
+  roles RolesByPublication?
+  posts PostsByPublication?
+  pages PagesByPublication?
+  blogs BlogsByPublication?
+}
+
+model Header {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  items HeaderItem[]
+}
+
+model Footer {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  items FooterItem[]
+}
+
+model HeaderItem {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  slug String @unique
+  description String? @unique
+  items HeaderItem[]
+}
+
+model FooterItem {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  slug String @unique
+  description String? @unique
+  items FooterItem[]
+}
+
+model PostsByPublication {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  publication Publication @relation(fields: [publicationId], references: [id])
+  publicationId String @db.ObjectId @unique
+  posts Post[]
+}
+
+model PublicationsByProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
+  publications Publication[]
+}
+
+model RolesByPublication {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  roles RolesOnPublicationByProfile[]
+}
+
+model RolesOnPublicationByProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
+  publication Publication @relation(fields: [publicationId], references: [id])
+  publicationId String @db.ObjectId @unique
+  role Role @default(EDITOR)
+  @@unique([profileId, publicationId])
+}
+
+model PostsOnProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  posts Post[]
+}
+
+model PagesOnProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  pages Page[]
+}
+
+model BlogsOnProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  blogs Blog[]
+}
+
+model ContributedOnPostsByProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  posts Post[]
+}
+
+model ContributedOnPagesByProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  pages Page[]
+}
+
+model ContributedOnBlogsByProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  blogs Blog[]
 }
 
 model TagsOnPost {
@@ -103,6 +250,18 @@ model TagsOnBlog {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   blog Blog
   tags Tag[] @default([])
+}
+
+model TagsCreatedByProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  tags Tag[]
+}
+
+model TaxononmiesCreatedByProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile
+  taxonomies Taxonomy[]
 }
 
 model Tag {
@@ -140,11 +299,15 @@ model Feedback {
 
 model CommentsOnPost {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId @unique
   comments Comment[]
 }
 
-model CommentOnBlog {
+model CommentsOnBlog {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
+  blog Blog @relation(fields: [blogId], references: [id])
+  blogId String @db.ObjectId @unique
   comments Comment[]
 }
 
@@ -153,6 +316,44 @@ model Comment {
   comment String
   user User
   repliedTo Comment? @relation("repliedTo")
+}
+
+model PostsOnTaxonomy {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  taxonomy Taxonomy @relation(fields: [taxonomyId], references: [id])
+  taxonomyId String @db.ObjectId @unique
+  posts Post[]
+}
+
+model SocialAccountsOnProfile {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId String @db.ObjectId @unique
+  socialAccounts SocialAccount[]
+}
+
+model SocialAccount {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  socialPlatform SocialPlatform
+  username String
+  @@unique([socialPlatform, username])
+}
+
+enum SocialPlatform {
+  YOUTUBE
+  INSTAGRAM
+  GITHUB
+  FACEBOOK
+  TWITTER
+}
+
+enum Role {
+  USER
+  EDITOR
+  CONTRIBUTER
+  SPONSOR
+  ADMIN
+  OWNER
 }
 
 enum Like {
