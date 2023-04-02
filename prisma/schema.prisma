@@ -59,8 +59,7 @@ model Post {
   slug                          String                       @unique
   description                   String                       @unique
   featuredImage                 String                       @unique
-  taxonomy                      Taxonomy                     @relation(fields: [taxonomyId], references: [id])
-  tagsId                        BigInt                       @unique
+  taxonomy                      Taxonomy                     @relation(fields: [taxonomyId], references: [id])                      @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
   schema                        Json                         @db.JsonB
@@ -92,7 +91,6 @@ model Page {
   slug                          String                       @unique
   description                   String                       @unique
   featuredImage                 String                       @unique
-  tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
   schema                        Json                         @db.JsonB
@@ -116,7 +114,6 @@ model Blog {
   slug                          String                       @unique
   description                   String                       @unique
   featuredImage                 String                       @unique
-  tagsId                        BigInt                       @unique
   createdAt                     DateTime                     @default(now())
   updatedAt                     DateTime                     @updatedAt
   schema                        Json                         @db.JsonB
