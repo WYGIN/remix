@@ -33,7 +33,7 @@
     max-width: calc(100vw - 32px);
   }
   main > div > code > button {
-    @apply min-w-[64px] hidden bg-[#173a5e80] absolute top-2 right-2 text-[0.8125rem] py-1 px-2 border-1 border border-[#1E4976] text-[E2EDF8] font-medium;
+    @apply min-w-[64px] hidden bg-[#173a5e80] absolute top-2 right-2 text-[0.8125rem] py-1 px-2 rounded border border-[#1E4976] text-[E2EDF8] font-medium;
   }
   main > div > code > button > span {
     @apply absolute left-[50%] top-[100%] min-w-[100%] mt-1 text-[0.8125rem] font-medium;
