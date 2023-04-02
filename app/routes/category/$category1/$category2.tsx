@@ -4,8 +4,10 @@ import { useLoaderData } from "@remix-run/react";
 export const loader = async ({ params }: LoaderArgs) => {
   const data = prisma.taxonomy.findUnique({
     where: {
-      category1: parama.category1,
-      category1: params.category2,
+      category: {
+        category1: parama.category1,
+        category2: params.category2,
+      }
     }
   });
   
