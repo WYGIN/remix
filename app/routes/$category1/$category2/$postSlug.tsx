@@ -18,5 +18,6 @@ export const loader = async ({ params }: LoaderArgs) => {
 }
 
 export default function Post() {
+  const data = useLoaderData<typeof loader>();
   return();
 }
