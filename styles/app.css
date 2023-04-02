@@ -8,7 +8,7 @@
     @apply relative pr-[62px] text-4xl font-extrabold my-[10px] block tracking-[0.2px];
   }
   main > div > p {
-    @apply mb-4 block text-lg [scroll-margin-top: 92px] break-words;
+    @apply mb-4 block text-lg break-words;
   }
   main > div > h2 {
     @apply relative pr-[62px] text-2xl font-bold tracking-[0.1px] mt-10 mb-1;
