@@ -57,7 +57,7 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   schema Json @unique
-  author UserOnPosts
+  author PostsOnProfile
   status Status @default(PUBLISHED)
   like Like @default(NONE)
   feedback Feedback[] @default([])
@@ -75,11 +75,10 @@ model Page {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   schema Json @unique
-  author UserOnPages
+  author PagesOnProfile
   status Status @default(PUBLISHED)
   like Like @default(NONE)
   feedback Feedback[] @default([])
-  comments CommentsOnPage
 }
 
 model Blog {
@@ -93,7 +92,7 @@ model Blog {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   schema Json @unique
-  author UserOnBlog
+  author BlogsOnProfile
   status Status @default(PUBLISHED)
   like Like @default(NONE)
   feedback Feedback[] @default([])
@@ -139,8 +138,6 @@ model Publication {
   logo String @String @unique
   roles RolesByPublication?
   posts PostsByPublication?
-  pages PagesByPublication?
-  blogs BlogsByPublication?
 }
 
 model Header {
@@ -258,7 +255,7 @@ model TagsCreatedByProfile {
   tags Tag[]
 }
 
-model TaxononmiesCreatedByProfile {
+model TaxonomiesCreatedByProfile {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   profile Profile
   taxonomies Taxonomy[]
@@ -331,6 +328,8 @@ model SocialAccountsOnProfile {
   profileId String @db.ObjectId @unique
   socialAccounts SocialAccount[]
 }
+
+model UserOnPosts
 
 model SocialAccount {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
