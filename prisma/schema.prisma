@@ -142,7 +142,7 @@ model Taxonomy {
   TaxonomiesCreatedByProfile   TaxonomiesCreatedByProfile? @relation(fields: [taxonomiesCreatedByProfileId], references: [id])
   taxonomiesCreatedByProfileId BigInt?
 
-  @@unique([category1Id, category2Id])
+  @@unique(fields: [category1Id, category2Id], "category")
 }
 
 model Category {
