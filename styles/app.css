@@ -5,13 +5,13 @@
 
 @layer base {
   main > div > h1 {
-    @apply relative pr-[62px] text-4xl font-extrabold [scroll-margin-top: 92px] my-[10px] block [margin-block-start: 0.67em] [margin-block-end: 0.67em] tracking-[0.2px];
+    @apply relative pr-[62px] text-4xl font-extrabold my-[10px] block tracking-[0.2px];
   }
   main > div > p {
-    @apply mb-4 block text-lg [scroll-margin-top: 92px] [margin-block-start: 1em] [margin-block-end: 1em] break-words;
+    @apply mb-4 block text-lg [scroll-margin-top: 92px] break-words;
   }
   main > div > h2 {
-    @apply relative pr-[62px] text-2xl font-bold tracking-[0.1px] mt-10 mb-1 [margin-block-star: 0.83em] [margin-block-end: 0.83em];
+    @apply relative pr-[62px] text-2xl font-bold tracking-[0.1px] mt-10 mb-1;
   }
   main > div > ol {
     @apply mb-4 text-lg break-words;
