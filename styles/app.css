@@ -26,7 +26,7 @@
     @apply relative my-4 mx-auto p-4 rounded-[10px] border border-[#E0E3E7];
   }
   main > div > code {
-    @apply [direction: ltr] relative text-[10px] leading-[1.5625rem] text-[#1A2027];
+    @apply relative text-[10px] leading-[1.5625rem] text-[#1A2027];
   }
   main > div > code > pre {
     @apply my-4 mx-auto p-4 text-[#F8F8F2] bg-[#001E3C] rounded-[10px] border border-[#132F4C] text-[0.8125rem] max-w-[cal(100vw - 32px)] max-h-[400px];
