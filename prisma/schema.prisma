@@ -101,9 +101,13 @@ model Blog {
 
 model Taxonomy {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
-  category1 Category @relation("primary category")
-  category2 Category @relation("secondary category")
+  category1 Category @relation("primary category", fields: [category1Id], references: [id])
+  category1Id String @db.ObjectId
+  category2 Category @relation("secondary category", fields: [category2Id], references: [id])
+  category2Id String @db.ObjectId
   postsOnTaxonomy PostsOnTaxonomy?
+  
+  @@unique([category1Id, category2Id])
 }
 
 model Category {
@@ -112,6 +116,8 @@ model Category {
   slug String @unique
   description String @unique
   logo String @unique
+  taxonomy1 Taxonomy[] @relation("primary category")
+  taxonomy2 Taxonomy[] @relation("secondary category")
 }
 
 model Profile {
