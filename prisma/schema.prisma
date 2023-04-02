@@ -161,7 +161,7 @@ model HeaderItem {
   name String @unique
   slug String @unique
   description String? @unique
-  items HeaderItem[]
+  items HeaderItem[] @relation("child items")
 }
 
 model FooterItem {
@@ -169,7 +169,7 @@ model FooterItem {
   name String @unique
   slug String @unique
   description String? @unique
-  items FooterItem[]
+  items FooterItem[] @relation("child items")
 }
 
 model PostsByPublication {
