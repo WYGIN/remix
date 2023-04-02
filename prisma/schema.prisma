@@ -39,6 +39,7 @@ model User {
   UserOnBlog     UserOnBlog?
   Feedback       Feedback?
   Comment        Comment[]
+  Bookmark       Bookmark?
 }
 
 model Follows {
@@ -78,6 +79,8 @@ model Post {
   UserOnPost                    UserOnPost[]
   PostsOnTaxonomy               PostsOnTaxonomy?             @relation(fields: [postsOnTaxonomyId], references: [id])
   postsOnTaxonomyId             String?                      @db.ObjectId
+  PostsOnBookmark               PostsOnBookmark?             @relation(fields: [postsOnBookmarkId], references: [id])
+  postsOnBookmarkId             String?                      @db.ObjectId
 }
 
 model Page {
@@ -432,15 +435,17 @@ model SocialAccount {
 }
 
 model Bookmark {
- id                        String                   @id @default(auto()) @map("_id") @db.ObjectId
- user User @relation(fields: [userId], references: [id])
- userId String @db.ObjectId @unique
- posts PostsOnBookmark?
+  id                String           @id @default(auto()) @map("_id") @db.ObjectId
+  user              User             @relation(fields: [userId], references: [id])
+  userId            String           @unique @db.ObjectId
+  posts             PostsOnBookmark? @relation(fields: [postsOnBookmarkId], references: [id])
+  postsOnBookmarkId String?          @db.ObjectId
 }
 
 model PostsOnBookmark {
- id                        String                   @id @default(auto()) @map("_id") @db.ObjectId
- posts Post[]
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  posts    Post[]
+  Bookmark Bookmark[]
 }
 
 enum SocialPlatform {
