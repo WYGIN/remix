@@ -11,10 +11,10 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  blocked        Boolean   @default(false)
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  blocked        Boolean     @default(false)
   created_at     DateTime
-  email          String    @unique
+  email          String      @unique
   email_verified Boolean
   family_name    String
   given_name     String
@@ -24,17 +24,22 @@ model User {
   name           String
   nickname       String
   phone_number   String
-  phone_verified Boolean   @default(false)
+  phone_verified Boolean     @default(false)
   picture        String
   updated_at     DateTime
-  user_id        String    @unique
-  username       String    @unique
-  follower       Follows[] @relation("follower")
-  following      Follows[] @relation("following")
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  role Role @default(USER)
-} 
+  user_id        String      @unique
+  username       String      @unique
+  follower       Follows[]   @relation("follower")
+  following      Follows[]   @relation("following")
+  profile        Profile     @relation(fields: [profileId], references: [id])
+  profileId      String      @unique @db.ObjectId
+  role           Role        @default(USER)
+  UserOnPost     UserOnPost?
+  UserOnPage     UserOnPage?
+  UserOnBlog     UserOnBlog?
+  Feedback       Feedback?
+  Comment        Comment[]
+}
 
 model Follows {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
@@ -42,322 +47,387 @@ model Follows {
   followedById String @db.ObjectId
   following    User   @relation("following", fields: [followingId], references: [id])
   followingId  String @db.ObjectId
+
   @@unique([followedById, followingId])
 }
 
 model Post {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  title         String @unique
-  body          String @unique
-  slug          String @unique
-  description   String @unique
-  featuredImage String @unique
-  taxonomy Taxonomy
-  tagsId String @db.ObjectId @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  schema Json @unique
-  author PostsOnProfile
-  status Status @default(PUBLISHED)
-  like Like @default(NONE)
-  feedback Feedback[]
-  comments CommentsOnPost?
+  id                            String                       @id @default(auto()) @map("_id") @db.ObjectId
+  title                         String                       @unique
+  body                          String                       @unique
+  slug                          String                       @unique
+  description                   String                       @unique
+  featuredImage                 String                       @unique
+  taxonomy                      Taxonomy                     @relation(fields: [taxonomyId], references: [id])
+  tagsId                        String                       @unique @db.ObjectId
+  createdAt                     DateTime                     @default(now())
+  updatedAt                     DateTime                     @updatedAt
+  schema                        Json                         @unique
+  author                        PostsOnProfile               @relation(fields: [postsOnProfileId], references: [id])
+  status                        Status                       @default(PUBLISHED)
+  like                          Like                         @default(NONE)
+  feedback                      Feedback[]
+  comments                      CommentsOnPost?
+  taxonomyId                    String                       @db.ObjectId
+  postsOnProfileId              String                       @db.ObjectId
+  PostsByPublication            PostsByPublication?          @relation(fields: [postsByPublicationId], references: [id])
+  postsByPublicationId          String?                      @db.ObjectId
+  ContributedOnPostsByProfile   ContributedOnPostsByProfile? @relation(fields: [contributedOnPostsByProfileId], references: [id])
+  contributedOnPostsByProfileId String?                      @db.ObjectId
+  TagsOnPost                    TagsOnPost?
+  UserOnPost                    UserOnPost[]
+  PostsOnTaxonomy               PostsOnTaxonomy?             @relation(fields: [postsOnTaxonomyId], references: [id])
+  postsOnTaxonomyId             String?                      @db.ObjectId
 }
 
 model Page {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  title         String @unique
-  body          String @unique
-  slug          String @unique
-  description   String @unique
-  featuredImage String @unique
-  tagsId String @db.ObjectId @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  schema Json @unique
-  author PagesOnProfile
-  status Status @default(PUBLISHED)
-  like Like @default(NONE)
-  feedback Feedback[]
+  id                            String                       @id @default(auto()) @map("_id") @db.ObjectId
+  title                         String                       @unique
+  body                          String                       @unique
+  slug                          String                       @unique
+  description                   String                       @unique
+  featuredImage                 String                       @unique
+  tagsId                        String                       @unique @db.ObjectId
+  createdAt                     DateTime                     @default(now())
+  updatedAt                     DateTime                     @updatedAt
+  schema                        Json                         @unique
+  author                        PagesOnProfile               @relation(fields: [pagesOnProfileId], references: [id])
+  status                        Status                       @default(PUBLISHED)
+  like                          Like                         @default(NONE)
+  feedback                      Feedback[]
+  pagesOnProfileId              String                       @db.ObjectId
+  ContributedOnPagesByProfile   ContributedOnPagesByProfile? @relation(fields: [contributedOnPagesByProfileId], references: [id])
+  contributedOnPagesByProfileId String?                      @db.ObjectId
+  TagsOnPage                    TagsOnPage?
+  UserOnPage                    UserOnPage[]
 }
 
 model Blog {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  title         String @unique
-  body          String @unique
-  slug          String @unique
-  description   String @unique
-  featuredImage String @unique
-  tagsId String @db.ObjectId @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  schema Json @unique
-  author BlogsOnProfile
-  status Status @default(PUBLISHED)
-  like Like @default(NONE)
-  feedback Feedback[]
+  id                            String                       @id @default(auto()) @map("_id") @db.ObjectId
+  title                         String                       @unique
+  body                          String                       @unique
+  slug                          String                       @unique
+  description                   String                       @unique
+  featuredImage                 String                       @unique
+  tagsId                        String                       @unique @db.ObjectId
+  createdAt                     DateTime                     @default(now())
+  updatedAt                     DateTime                     @updatedAt
+  schema                        Json                         @unique
+  author                        BlogsOnProfile               @relation(fields: [blogsOnProfileId], references: [id])
+  status                        Status                       @default(PUBLISHED)
+  like                          Like                         @default(NONE)
+  feedback                      Feedback[]
+  blogsOnProfileId              String                       @db.ObjectId
+  ContributedOnBlogsByProfile   ContributedOnBlogsByProfile? @relation(fields: [contributedOnBlogsByProfileId], references: [id])
+  contributedOnBlogsByProfileId String?                      @db.ObjectId
+  TagsOnBlog                    TagsOnBlog?
+  UserOnBlog                    UserOnBlog[]
+  CommentsOnBlog                CommentsOnBlog?
 }
 
 model Taxonomy {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  category1 Category @relation("primary category", fields: [category1Id], references: [id])
-  category1Id String @db.ObjectId
-  category2 Category @relation("secondary category", fields: [category2Id], references: [id])
-  category2Id String @db.ObjectId
-  postsOnTaxonomy PostsOnTaxonomy?
-  
+  id                           String                      @id @default(auto()) @map("_id") @db.ObjectId
+  category1                    Category                    @relation("primary category", fields: [category1Id], references: [id])
+  category1Id                  String                      @db.ObjectId
+  category2                    Category                    @relation("secondary category", fields: [category2Id], references: [id])
+  category2Id                  String                      @db.ObjectId
+  postsOnTaxonomy              PostsOnTaxonomy?
+  Post                         Post[]
+  TaxonomiesCreatedByProfile   TaxonomiesCreatedByProfile? @relation(fields: [taxonomiesCreatedByProfileId], references: [id])
+  taxonomiesCreatedByProfileId String?                     @db.ObjectId
+
   @@unique([category1Id, category2Id])
 }
 
 model Category {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  slug String @unique
-  description String @unique
-  logo String @unique
-  taxonomy1 Taxonomy[] @relation("primary category")
-  taxonomy2 Taxonomy[] @relation("secondary category")
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String     @unique
+  slug        String     @unique
+  description String     @unique
+  logo        String     @unique
+  taxonomy1   Taxonomy[] @relation("primary category")
+  taxonomy2   Taxonomy[] @relation("secondary category")
 }
 
 model Profile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  bio String @unique
-  postsCreated PostsOnProfile?
-  pagesCreated PagesOnProfile?
-  blogsCreated BlogsOnProfile?
-  postsContributed ContributedOnPostsByProfile?
-  pagesContributed ContributedOnPagesByProfile?
-  blogsContributed ContributedOnBlogsByProfile?
-  tagsCreated TagsCreatedByProfile?
-  taxonomiesCreated TaxonomiesCreatedByProfile?
-  userId String @db.ObjectId @unique
-  socialAccounts SocialAccountsOnProfile?
+  id                          String                       @id @default(auto()) @map("_id") @db.ObjectId
+  bio                         String                       @unique
+  postsCreated                PostsOnProfile?
+  pagesCreated                PagesOnProfile?
+  blogsCreated                BlogsOnProfile?
+  postsContributed            ContributedOnPostsByProfile?
+  pagesContributed            ContributedOnPagesByProfile?
+  blogsContributed            ContributedOnBlogsByProfile?
+  tagsCreated                 TagsCreatedByProfile?
+  taxonomiesCreated           TaxonomiesCreatedByProfile?
+  userId                      String                       @unique @db.ObjectId
+  socialAccounts              SocialAccountsOnProfile?
+  User                        User?
+  PublicationsByProfile       PublicationsByProfile?
+  RolesOnPublicationByProfile RolesOnPublicationByProfile?
 }
 
 model Publication {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  slug String @unique
-  description String @unique
-  logo String @unique
-  roles RolesByPublication?
-  posts PostsByPublication?
+  id                          String                       @id @default(auto()) @map("_id") @db.ObjectId
+  name                        String                       @unique
+  slug                        String                       @unique
+  description                 String                       @unique
+  logo                        String                       @unique
+  roles                       RolesByPublication?          @relation(fields: [rolesByPublicationId], references: [id])
+  posts                       PostsByPublication?
+  rolesByPublicationId        String?                      @db.ObjectId
+  PublicationsByProfile       PublicationsByProfile?       @relation(fields: [publicationsByProfileId], references: [id])
+  publicationsByProfileId     String?                      @db.ObjectId
+  RolesOnPublicationByProfile RolesOnPublicationByProfile?
 }
 
 model Header {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  id    String       @id @default(auto()) @map("_id") @db.ObjectId
   items HeaderItem[]
 }
 
 model Footer {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  id    String       @id @default(auto()) @map("_id") @db.ObjectId
   items FooterItem[]
 }
 
 model HeaderItem {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  slug String @unique
-  description String? @unique
-  items HeaderItem[] @relation("child items")
-  itemsRel HeaderItem @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  itemsRelId String @db.ObjectId
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String       @unique
+  slug        String       @unique
+  description String?      @unique
+  items       HeaderItem[] @relation("child items")
+  itemsRel    HeaderItem   @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  itemsRelId  String       @db.ObjectId
+  Header      Header?      @relation(fields: [headerId], references: [id])
+  headerId    String?      @db.ObjectId
 }
 
 model FooterItem {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  slug String @unique
-  description String? @unique
-  items FooterItem[] @relation("child items")
-  itemsRel FooterItem @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  itemsRelId String @db.ObjectId
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String       @unique
+  slug        String       @unique
+  description String?      @unique
+  items       FooterItem[] @relation("child items")
+  itemsRel    FooterItem   @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  itemsRelId  String       @db.ObjectId
+  Footer      Footer?      @relation(fields: [footerId], references: [id])
+  footerId    String?      @db.ObjectId
 }
 
 model PostsByPublication {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  publication Publication @relation(fields: [publicationId], references: [id])
-  publicationId String @db.ObjectId @unique
-  posts Post[]
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  publication   Publication @relation(fields: [publicationId], references: [id])
+  publicationId String      @unique @db.ObjectId
+  posts         Post[]
 }
 
 model PublicationsByProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  profile      Profile       @relation(fields: [profileId], references: [id])
+  profileId    String        @unique @db.ObjectId
   publications Publication[]
 }
 
 model RolesByPublication {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  roles RolesOnPublicationByProfile[]
+  id          String                        @id @default(auto()) @map("_id") @db.ObjectId
+  roles       RolesOnPublicationByProfile[]
+  Publication Publication[]
 }
 
 model RolesOnPublicationByProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  publication Publication @relation(fields: [publicationId], references: [id])
-  publicationId String @db.ObjectId @unique
-  role Role @default(EDITOR)
+  id                   String              @id @default(auto()) @map("_id") @db.ObjectId
+  profile              Profile             @relation(fields: [profileId], references: [id])
+  profileId            String              @unique @db.ObjectId
+  publication          Publication         @relation(fields: [publicationId], references: [id])
+  publicationId        String              @unique @db.ObjectId
+  role                 Role                @default(EDITOR)
+  RolesByPublication   RolesByPublication? @relation(fields: [rolesByPublicationId], references: [id])
+  rolesByPublicationId String?             @db.ObjectId
+
   @@unique([profileId, publicationId])
 }
 
 model PostsOnProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  posts Post[]
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @db.ObjectId
+  posts     Post[]
 }
 
 model PagesOnProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  pages Page[]
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @db.ObjectId
+  pages     Page[]
 }
 
 model BlogsOnProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  blogs Blog[]
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @db.ObjectId
+  blogs     Blog[]
 }
 
 model ContributedOnPostsByProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  posts Post[]
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @db.ObjectId
+  posts     Post[]
 }
 
 model ContributedOnPagesByProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  pages Page[]
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @db.ObjectId
+  pages     Page[]
 }
 
 model ContributedOnBlogsByProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  blogs Blog[]
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @db.ObjectId
+  blogs     Blog[]
 }
 
 model TagsOnPost {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  post Post @relation(fields: [postId], references: [id])
-  postId String @db.ObjectId @unique
-  tags Tag[]
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String @unique @db.ObjectId
+  tags   Tag[]
 }
 
 model TagsOnPage {
- id            String @id @default(auto()) @map("_id") @db.ObjectId
- page Page @relation(fields: [pageId], references: [id])
- pageId String @db.ObjectId @unique
- tags Tag[]
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @unique @db.ObjectId
+  tags   Tag[]
 }
 
 model TagsOnBlog {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  blog Blog @relation(fields: [blogId], references: [id])
-  blogId String @db.ObjectId @unique
-  tags Tag[]
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  blog   Blog   @relation(fields: [blogId], references: [id])
+  blogId String @unique @db.ObjectId
+  tags   Tag[]
 }
 
 model TagsCreatedByProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
-  tags Tag[]
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique @db.ObjectId
+  tags      Tag[]
 }
 
 model TaxonomiesCreatedByProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  profile    Profile    @relation(fields: [profileId], references: [id])
+  profileId  String     @unique @db.ObjectId
   taxonomies Taxonomy[]
 }
 
 model Tag {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  slug String @unique
-  description String @unique
-  logo String @unique
+  id                     String                @id @default(auto()) @map("_id") @db.ObjectId
+  name                   String
+  slug                   String                @unique
+  description            String                @unique
+  logo                   String                @unique
+  TagsOnPost             TagsOnPost?           @relation(fields: [tagsOnPostId], references: [id])
+  tagsOnPostId           String?               @db.ObjectId
+  TagsOnPage             TagsOnPage?           @relation(fields: [tagsOnPageId], references: [id])
+  tagsOnPageId           String?               @db.ObjectId
+  TagsOnBlog             TagsOnBlog?           @relation(fields: [tagsOnBlogId], references: [id])
+  tagsOnBlogId           String?               @db.ObjectId
+  TagsCreatedByProfile   TagsCreatedByProfile? @relation(fields: [tagsCreatedByProfileId], references: [id])
+  tagsCreatedByProfileId String?               @db.ObjectId
 }
 
 model UserOnPost {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  user User @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId @unique
-  post Post
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId
 }
 
 model UserOnPage {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  user User @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId @unique
-  page Page
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId String @db.ObjectId
 }
 
 model UserOnBlog {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  user User @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId @unique
-  blog Blog
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+  blog   Blog   @relation(fields: [blogId], references: [id])
+  blogId String @db.ObjectId
 }
 
 model Feedback {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  user User @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId @unique
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @unique @db.ObjectId
   feedback String
-  rating Int
+  rating   Int
+  Post     Post?   @relation(fields: [postId], references: [id])
+  postId   String? @db.ObjectId
+  Page     Page?   @relation(fields: [pageId], references: [id])
+  pageId   String? @db.ObjectId
+  Blog     Blog?   @relation(fields: [blogId], references: [id])
+  blogId   String? @db.ObjectId
 }
 
 model CommentsOnPost {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  post Post @relation(fields: [postId], references: [id])
-  postId String @db.ObjectId @unique
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  post     Post      @relation(fields: [postId], references: [id])
+  postId   String    @unique @db.ObjectId
   comments Comment[]
 }
 
 model CommentsOnBlog {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  blog Blog @relation(fields: [blogId], references: [id])
-  blogId String @db.ObjectId @unique
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  blog     Blog      @relation(fields: [blogId], references: [id])
+  blogId   String    @unique @db.ObjectId
   comments Comment[]
 }
 
 model Comment {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  comment String
-  user User
-  repliedTo Comment? @relation("repliedTo")
-  commentRel Comment @relation("repliedTo", fields: [commentRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  commentRelId String @db.ObjectId @unique
+  id               String          @id @default(auto()) @map("_id") @db.ObjectId
+  comment          String
+  user             User            @relation(fields: [userId], references: [id])
+  repliedTo        Comment?        @relation("repliedTo")
+  commentRel       Comment         @relation("repliedTo", fields: [commentRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  commentRelId     String          @unique @db.ObjectId
+  CommentsOnPost   CommentsOnPost? @relation(fields: [commentsOnPostId], references: [id])
+  commentsOnPostId String?         @db.ObjectId
+  CommentsOnBlog   CommentsOnBlog? @relation(fields: [commentsOnBlogId], references: [id])
+  commentsOnBlogId String?         @db.ObjectId
+  userId           String          @db.ObjectId
 }
 
 model PostsOnTaxonomy {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  taxonomy Taxonomy @relation(fields: [taxonomyId], references: [id])
-  taxonomyId String @db.ObjectId @unique
-  posts Post[]
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  taxonomy   Taxonomy @relation(fields: [taxonomyId], references: [id])
+  taxonomyId String   @unique @db.ObjectId
+  posts      Post[]
 }
 
 model SocialAccountsOnProfile {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId String @db.ObjectId @unique
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  profile        Profile         @relation(fields: [profileId], references: [id])
+  profileId      String          @unique @db.ObjectId
   socialAccounts SocialAccount[]
 }
 
 model SocialAccount {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  socialPlatform SocialPlatform
-  username String
+  id                        String                   @id @default(auto()) @map("_id") @db.ObjectId
+  socialPlatform            SocialPlatform
+  username                  String
+  SocialAccountsOnProfile   SocialAccountsOnProfile? @relation(fields: [socialAccountsOnProfileId], references: [id])
+  socialAccountsOnProfileId String?                  @db.ObjectId
+
   @@unique([socialPlatform, username])
 }
 
