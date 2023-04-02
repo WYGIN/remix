@@ -439,13 +439,12 @@ model Bookmark {
   user              User             @relation(fields: [userId], references: [id])
   userId            String           @unique @db.ObjectId
   posts             PostsOnBookmark? @relation(fields: [postsOnBookmarkId], references: [id])
-  postsOnBookmarkId String?          @db.ObjectId
+  postsOnBookmarkId String?          @db.ObjectId @unique
 }
 
 model PostsOnBookmark {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
   posts    Post[]
-  Bookmark Bookmark[]
 }
 
 enum SocialPlatform {
