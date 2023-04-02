@@ -60,7 +60,7 @@ model Post {
   author PostsOnProfile
   status Status @default(PUBLISHED)
   like Like @default(NONE)
-  feedback Feedback[] @default([])
+  feedback Feedback[]
   comments CommentsOnPost
 }
 
@@ -78,7 +78,7 @@ model Page {
   author PagesOnProfile
   status Status @default(PUBLISHED)
   like Like @default(NONE)
-  feedback Feedback[] @default([])
+  feedback Feedback[]
 }
 
 model Blog {
@@ -95,7 +95,7 @@ model Blog {
   author BlogsOnProfile
   status Status @default(PUBLISHED)
   like Like @default(NONE)
-  feedback Feedback[] @default([])
+  feedback Feedback[]
   comments CommentsOnBlog
 }
 
@@ -135,7 +135,7 @@ model Publication {
   name String @unique
   slug String @unique
   description String @unique
-  logo String @String @unique
+  logo String @unique
   roles RolesByPublication?
   posts PostsByPublication?
 }
@@ -234,19 +234,19 @@ model ContributedOnBlogsByProfile {
 model TagsOnPost {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   post Post
-  tags Tag[] @default([])
+  tags Tag[]
 }
 
 model TagsOnPage {
  id            String @id @default(auto()) @map("_id") @db.ObjectId
  page Page
- tags Tag[] @default([])
+ tags Tag[]
 }
 
 model TagsOnBlog {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   blog Blog
-  tags Tag[] @default([])
+  tags Tag[]
 }
 
 model TagsCreatedByProfile {
