@@ -14,8 +14,20 @@ export async function action({ request }: ActionArgs) {
       body: data.get('body'),
       featuredImage: data.get('featuredImage'),
       description: data.get('description'),
-      category1: data.get('category1'),
-      category2: data.get('category2'),
+      taxonomy: {
+        connectOrCreate: {
+          where: {
+            category: {
+              category1: data.get('category1'),
+              category2: data.get('category2'),
+            },
+          },
+          create: {
+            category1: data.get('category1'),
+            category2: data.get('category2'),
+          },
+        },
+      },
       tags: data.get('tags'),
       slug: data.get('slug'),
       schema: data.get('schema'),
@@ -31,8 +43,20 @@ export async function action({ request }: ActionArgs) {
       body: data.get('body'),
       featuredImage: data.get('featuredImage'),
       description: data.get('description'),
-      category1: data.get('category1'),
-      category2: data.get('category2'),
+      taxonomy: {
+        connectOrCreate: {
+          where: {
+            category: {
+              category1: data.get('category1'),
+              category2: data.get('category2')
+            },
+          },
+          create: {
+            category1: data.get('category1'),
+            category2: data.get('category2')
+          }
+        },
+      },
       tags: data.get('tags'),
       slug: data.get('slug'),
       schema: data.get('schema'),
