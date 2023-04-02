@@ -13,5 +13,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export default function Page() {
   const data = useLoaderData<typeof loader>();
-  return();
+  return(
+    <></>
+  )
 }
