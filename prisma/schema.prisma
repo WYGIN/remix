@@ -81,7 +81,7 @@ model Post {
   postsOnTaxonomyId             BigInt?
   PostsOnBookmark               PostsOnBookmark?             @relation(fields: [postsOnBookmarkId], references: [id])
   postsOnBookmarkId             BigInt?
-  
+
   @@index([id, slug])
 }
 
@@ -105,7 +105,7 @@ model Page {
   contributedOnPagesByProfileId BigInt?
   TagsOnPage                    TagsOnPage?
   UserOnPage                    UserOnPage[]
-  
+
   @@index([id, slug])
 }
 
@@ -130,7 +130,7 @@ model Blog {
   TagsOnBlog                    TagsOnBlog?
   UserOnBlog                    UserOnBlog[]
   CommentsOnBlog                CommentsOnBlog?
-  
+
   @@index([id, slug])
 }
 
