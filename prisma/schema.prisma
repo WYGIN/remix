@@ -1,0 +1,477 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             BigInt            @id @default(sequence())
+  blocked        Boolean     @default(false)
+  created_at     DateTime
+  email          String      @unique
+  email_verified Boolean
+  family_name    String
+  given_name     String
+  last_ip        String
+  last_login     DateTime
+  logins_count   Int
+  name           String
+  nickname       String
+  phone_number   String
+  phone_verified Boolean     @default(false)
+  picture        String
+  updated_at     DateTime
+  user_id        String      @unique
+  username       String      @unique
+  follower       Follows[]   @relation("follower")
+  following      Follows[]   @relation("following")
+  profile        Profile     @relation(fields: [profileId], references: [id])
+  profileId      BigInt      @unique
+  role           Role        @default(USER)
+  UserOnPost     UserOnPost?
+  UserOnPage     UserOnPage?
+  UserOnBlog     UserOnBlog?
+  Feedback       Feedback?
+  Comment        Comment[]
+  Bookmark       Bookmark?
+}
+
+model Follows {
+  id           BigInt @id @default(sequence())
+  followedBy   User   @relation("follower", fields: [followedById], references: [id])
+  followedById BigInt
+  following    User   @relation("following", fields: [followingId], references: [id])
+  followingId  BigInt
+
+  @@unique([followedById, followingId])
+}
+
+model Post {
+  id                            BigInt                       @id @default(sequence())
+  title                         String                       @unique
+  body                          String                       @unique
+  slug                          String                       @unique
+  description                   String                       @unique
+  featuredImage                 String                       @unique
+  taxonomy                      Taxonomy                     @relation(fields: [taxonomyId], references: [id])
+  tagsId                        BigInt                       @unique 
+  createdAt                     DateTime                     @default(now())
+  updatedAt                     DateTime                     @updatedAt
+  schema                        Json                         @unique
+  author                        PostsOnProfile               @relation(fields: [postsOnProfileId], references: [id])
+  status                        Status                       @default(PUBLISHED)
+  like                          Like                         @default(NONE)
+  feedback                      Feedback[]
+  comments                      CommentsOnPost?
+  taxonomyId                    BigInt                       
+  postsOnProfileId              BigInt                       
+  PostsByPublication            PostsByPublication?          @relation(fields: [postsByPublicationId], references: [id])
+  postsByPublicationId          BigInt?                      
+  ContributedOnPostsByProfile   ContributedOnPostsByProfile? @relation(fields: [contributedOnPostsByProfileId], references: [id])
+  contributedOnPostsByProfileId BigInt?                      
+  TagsOnPost                    TagsOnPost?
+  UserOnPost                    UserOnPost[]
+  PostsOnTaxonomy               PostsOnTaxonomy?             @relation(fields: [postsOnTaxonomyId], references: [id])
+  postsOnTaxonomyId             BigInt?                      
+  PostsOnBookmark               PostsOnBookmark?             @relation(fields: [postsOnBookmarkId], references: [id])
+  postsOnBookmarkId             BigInt?                      
+}
+
+model Page {
+  id                            BigInt                       @id @default(sequence())
+  title                         String                       @unique
+  body                          String                       @unique
+  slug                          String                       @unique
+  description                   String                       @unique
+  featuredImage                 String                       @unique
+  tagsId                        BigInt                       @unique 
+  createdAt                     DateTime                     @default(now())
+  updatedAt                     DateTime                     @updatedAt
+  schema                        Json                         @unique
+  author                        PagesOnProfile               @relation(fields: [pagesOnProfileId], references: [id])
+  status                        Status                       @default(PUBLISHED)
+  like                          Like                         @default(NONE)
+  feedback                      Feedback[]
+  pagesOnProfileId              BigInt                       
+  ContributedOnPagesByProfile   ContributedOnPagesByProfile? @relation(fields: [contributedOnPagesByProfileId], references: [id])
+  contributedOnPagesByProfileId BigInt?                      
+  TagsOnPage                    TagsOnPage?
+  UserOnPage                    UserOnPage[]
+}
+
+model Blog {
+  id                            BigInt                       @id @default(sequence())
+  title                         String                       @unique
+  body                          String                       @unique
+  slug                          String                       @unique
+  description                   String                       @unique
+  featuredImage                 String                       @unique
+  tagsId                        BigInt                       @unique 
+  createdAt                     DateTime                     @default(now())
+  updatedAt                     DateTime                     @updatedAt
+  schema                        Json                         @unique
+  author                        BlogsOnProfile               @relation(fields: [blogsOnProfileId], references: [id])
+  status                        Status                       @default(PUBLISHED)
+  like                          Like                         @default(NONE)
+  feedback                      Feedback[]
+  blogsOnProfileId              BigInt                       
+  ContributedOnBlogsByProfile   ContributedOnBlogsByProfile? @relation(fields: [contributedOnBlogsByProfileId], references: [id])
+  contributedOnBlogsByProfileId BigInt?                      
+  TagsOnBlog                    TagsOnBlog?
+  UserOnBlog                    UserOnBlog[]
+  CommentsOnBlog                CommentsOnBlog?
+}
+
+model Taxonomy {
+  id                           BigInt                      @id @default(sequence())
+  category1                    Category                    @relation("primary category", fields: [category1Id], references: [id])
+  category1Id                  BigInt                      
+  category2                    Category                    @relation("secondary category", fields: [category2Id], references: [id])
+  category2Id                  BigInt                      
+  postsOnTaxonomy              PostsOnTaxonomy?
+  Post                         Post[]
+  TaxonomiesCreatedByProfile   TaxonomiesCreatedByProfile? @relation(fields: [taxonomiesCreatedByProfileId], references: [id])
+  taxonomiesCreatedByProfileId BigInt?                     
+
+  @@unique([category1Id, category2Id])
+}
+
+model Category {
+  id          BigInt     @id @default(sequence())
+  name        String     @unique
+  slug        String     @unique
+  description String     @unique
+  logo        String     @unique
+  taxonomy1   Taxonomy[] @relation("primary category")
+  taxonomy2   Taxonomy[] @relation("secondary category")
+}
+
+model Profile {
+  id                          BigInt                       @id @default(sequence())
+  bio                         String                       @unique
+  postsCreated                PostsOnProfile?
+  pagesCreated                PagesOnProfile?
+  blogsCreated                BlogsOnProfile?
+  postsContributed            ContributedOnPostsByProfile?
+  pagesContributed            ContributedOnPagesByProfile?
+  blogsContributed            ContributedOnBlogsByProfile?
+  tagsCreated                 TagsCreatedByProfile?
+  taxonomiesCreated           TaxonomiesCreatedByProfile?
+  userId                      BigInt                       @unique 
+  socialAccounts              SocialAccountsOnProfile?
+  User                        User?
+  PublicationsByProfile       PublicationsByProfile?
+  RolesOnPublicationByProfile RolesOnPublicationByProfile?
+}
+
+model Publication {
+  id                          BigInt                       @id @default(sequence())
+  name                        String                       @unique
+  slug                        String                       @unique
+  description                 String                       @unique
+  logo                        String                       @unique
+  roles                       RolesByPublication?          @relation(fields: [rolesByPublicationId], references: [id])
+  posts                       PostsByPublication?
+  rolesByPublicationId        BigInt?                      
+  PublicationsByProfile       PublicationsByProfile?       @relation(fields: [publicationsByProfileId], references: [id])
+  publicationsByProfileId     BigInt?                      
+  RolesOnPublicationByProfile RolesOnPublicationByProfile?
+}
+
+model Header {
+  id    BigInt       @id @default(sequence())
+  items HeaderItem[]
+}
+
+model Footer {
+  id    BigInt       @id @default(sequence())
+  items FooterItem[]
+}
+
+model HeaderItem {
+  id          BigInt       @id @default(sequence())
+  name        String       @unique
+  slug        String       @unique
+  description String?      @unique
+  items       HeaderItem[] @relation("child items")
+  itemsRel    HeaderItem   @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  itemsRelId  BigInt       
+  Header      Header?      @relation(fields: [headerId], references: [id])
+  headerId    BigInt?      
+}
+
+model FooterItem {
+  id          BigInt       @id @default(sequence())
+  name        String       @unique
+  slug        String       @unique
+  description String?      @unique
+  items       FooterItem[] @relation("child items")
+  itemsRel    FooterItem   @relation("child items", fields: [itemsRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  itemsRelId  BigInt       
+  Footer      Footer?      @relation(fields: [footerId], references: [id])
+  footerId    BigInt?      
+}
+
+model PostsByPublication {
+  id            BigInt            @id @default(sequence())
+  publication   Publication @relation(fields: [publicationId], references: [id])
+  publicationId BigInt      @unique 
+  posts         Post[]
+}
+
+model PublicationsByProfile {
+  id           BigInt        @id @default(sequence())
+  profile      Profile       @relation(fields: [profileId], references: [id])
+  profileId    BigInt        @unique 
+  publications Publication[]
+}
+
+model RolesByPublication {
+  id          BigInt                        @id @default(sequence())
+  roles       RolesOnPublicationByProfile[]
+  Publication Publication[]
+}
+
+model RolesOnPublicationByProfile {
+  id                   BigInt              @id @default(sequence())
+  profile              Profile             @relation(fields: [profileId], references: [id])
+  profileId            BigInt              @unique 
+  publication          Publication         @relation(fields: [publicationId], references: [id])
+  publicationId        BigInt              @unique 
+  role                 Role                @default(EDITOR)
+  RolesByPublication   RolesByPublication? @relation(fields: [rolesByPublicationId], references: [id])
+  rolesByPublicationId BigInt?             
+
+  @@unique([profileId, publicationId])
+}
+
+model PostsOnProfile {
+  id        BigInt  @id @default(sequence())
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId BigInt  @unique 
+  posts     Post[]
+}
+
+model PagesOnProfile {
+  id        BigInt  @id @default(sequence())
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId BigInt  @unique 
+  pages     Page[]
+}
+
+model BlogsOnProfile {
+  id        BigInt  @id @default(sequence())
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId BigInt  @unique 
+  blogs     Blog[]
+}
+
+model ContributedOnPostsByProfile {
+  id        BigInt  @id @default(sequence())
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId BigInt  @unique 
+  posts     Post[]
+}
+
+model ContributedOnPagesByProfile {
+  id        BigInt  @id @default(sequence())
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId BigInt  @unique 
+  pages     Page[]
+}
+
+model ContributedOnBlogsByProfile {
+  id        BigInt  @id @default(sequence())
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId BigInt  @unique 
+  blogs     Blog[]
+}
+
+model TagsOnPost {
+  id     BigInt @id @default(sequence())
+  post   Post   @relation(fields: [postId], references: [id])
+  postId BigInt @unique 
+  tags   Tag[]
+}
+
+model TagsOnPage {
+  id     BigInt @id @default(sequence())
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId BigInt @unique 
+  tags   Tag[]
+}
+
+model TagsOnBlog {
+  id     BigInt @id @default(sequence())
+  blog   Blog   @relation(fields: [blogId], references: [id])
+  blogId BigInt @unique 
+  tags   Tag[]
+}
+
+model TagsCreatedByProfile {
+  id        BigInt  @id @default(sequence())
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId BigInt  @unique 
+  tags      Tag[]
+}
+
+model TaxonomiesCreatedByProfile {
+  id         BigInt     @id @default(sequence())
+  profile    Profile    @relation(fields: [profileId], references: [id])
+  profileId  BigInt     @unique 
+  taxonomies Taxonomy[]
+}
+
+model Tag {
+  id                     BigInt                @id @default(sequence())
+  name                   String
+  slug                   String                @unique
+  description            String                @unique
+  logo                   String                @unique
+  TagsOnPost             TagsOnPost?           @relation(fields: [tagsOnPostId], references: [id])
+  tagsOnPostId           BigInt?               
+  TagsOnPage             TagsOnPage?           @relation(fields: [tagsOnPageId], references: [id])
+  tagsOnPageId           BigInt?               
+  TagsOnBlog             TagsOnBlog?           @relation(fields: [tagsOnBlogId], references: [id])
+  tagsOnBlogId           BigInt?               
+  TagsCreatedByProfile   TagsCreatedByProfile? @relation(fields: [tagsCreatedByProfileId], references: [id])
+  tagsCreatedByProfileId BigInt?               
+}
+
+model UserOnPost {
+  id     BigInt @id @default(sequence())
+  user   User   @relation(fields: [userId], references: [id])
+  userId BigInt @unique 
+  post   Post   @relation(fields: [postId], references: [id])
+  postId BigInt 
+}
+
+model UserOnPage {
+  id     BigInt @id @default(sequence())
+  user   User   @relation(fields: [userId], references: [id])
+  userId BigInt @unique 
+  page   Page   @relation(fields: [pageId], references: [id])
+  pageId BigInt 
+}
+
+model UserOnBlog {
+  id     BigInt @id @default(sequence())
+  user   User   @relation(fields: [userId], references: [id])
+  userId BigInt @unique 
+  blog   Blog   @relation(fields: [blogId], references: [id])
+  blogId BigInt 
+}
+
+model Feedback {
+  id       BigInt  @id @default(sequence())
+  user     User    @relation(fields: [userId], references: [id])
+  userId   BigInt  @unique 
+  feedback String
+  rating   Int
+  Post     Post?   @relation(fields: [postId], references: [id])
+  postId   BigInt? 
+  Page     Page?   @relation(fields: [pageId], references: [id])
+  pageId   BigInt? 
+  Blog     Blog?   @relation(fields: [blogId], references: [id])
+  blogId   BigInt? 
+}
+
+model CommentsOnPost {
+  id       BigInt    @id @default(sequence())
+  post     Post      @relation(fields: [postId], references: [id])
+  postId   BigInt    @unique 
+  comments Comment[]
+}
+
+model CommentsOnBlog {
+  id       BigInt    @id @default(sequence())
+  blog     Blog      @relation(fields: [blogId], references: [id])
+  blogId   BigInt    @unique 
+  comments Comment[]
+}
+
+model Comment {
+  id               BigInt          @id @default(sequence())
+  comment          String
+  user             User            @relation(fields: [userId], references: [id])
+  repliedTo        Comment?        @relation("repliedTo")
+  commentRel       Comment         @relation("repliedTo", fields: [commentRelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  commentRelId     BigInt          @unique 
+  CommentsOnPost   CommentsOnPost? @relation(fields: [commentsOnPostId], references: [id])
+  commentsOnPostId BigInt?         
+  CommentsOnBlog   CommentsOnBlog? @relation(fields: [commentsOnBlogId], references: [id])
+  commentsOnBlogId BigInt?         
+  userId           BigInt          
+}
+
+model PostsOnTaxonomy {
+  id         BigInt   @id @default(sequence())
+  taxonomy   Taxonomy @relation(fields: [taxonomyId], references: [id])
+  taxonomyId BigInt   @unique 
+  posts      Post[]
+}
+
+model SocialAccountsOnProfile {
+  id             BigInt          @id @default(sequence())
+  profile        Profile         @relation(fields: [profileId], references: [id])
+  profileId      BigInt          @unique 
+  socialAccounts SocialAccount[]
+}
+
+model SocialAccount {
+  id                        BigInt                   @id @default(sequence())
+  socialPlatform            SocialPlatform
+  username                  String
+  SocialAccountsOnProfile   SocialAccountsOnProfile? @relation(fields: [socialAccountsOnProfileId], references: [id])
+  socialAccountsOnProfileId BigInt?                  
+
+  @@unique([socialPlatform, username])
+}
+
+model Bookmark {
+  id                BigInt           @id @default(sequence())
+  user              User             @relation(fields: [userId], references: [id])
+  userId            BigInt           @unique 
+  posts             PostsOnBookmark? @relation(fields: [postsOnBookmarkId], references: [id])
+  postsOnBookmarkId BigInt?          @unique 
+}
+
+model PostsOnBookmark {
+  id       BigInt    @id @default(sequence())
+  posts    Post[]
+  Bookmark Bookmark?
+}
+
+enum SocialPlatform {
+  YOUTUBE
+  INSTAGRAM
+  GITHUB
+  FACEBOOK
+  TWITTER
+}
+
+enum Role {
+  USER
+  EDITOR
+  CONTRIBUTER
+  SPONSOR
+  ADMIN
+  OWNER
+}
+
+enum Like {
+  LIKED
+  DISLIKED
+  NONE
+}
+
+enum Status {
+  PUBLISHED
+  DRAFT
+}
