@@ -61,7 +61,7 @@ model Post {
   status Status @default(PUBLISHED)
   like Like @default(NONE)
   feedback Feedback[]
-  comments CommentsOnPost
+  comments CommentsOnPost?
 }
 
 model Page {
