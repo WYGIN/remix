@@ -2,9 +2,11 @@ import { prisma } from '@utils/prisma';
 import { useLoaderData } from "@remix-run/react";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import TextField from '@mui/material/TextField';
+import Editor from '@components/CKEditor';
 import TagInput from '@components/TagInput';
 import TaxonomyInput from '@components/TaxonomyInput';
 import JsonEditor from '@components/JsonEditor';
+import React, { useState } from 'react';
 
 export async function action({ request }: ActionArgs) {
   const data = await request.formData();
@@ -75,7 +77,12 @@ export async function action({ request }: ActionArgs) {
   });
 }
 export default function Page() {
-  
+  const [editorData, setEditorData] = useState('');
+  const [slug, setSlug] = useState('');
+  const [taxonomy, setTaxonomy] = useState<String[]>([]);
+  const [tags, setTags] = useState<String[]>([]);
+  const [description, setDescription] = useState('');
+  const [schema, setSchema] = useState<Json>();
   return(
     <div class="flex flex-col items-center justify-center"> 
       <div id="header" class="backdrop-blur bg-[#FFFFFFCC] h-[64px] border-b border-solid border-gray box-border text-[#2d3843] [color-scheme: light] flex flex-row shrink-0 text-base left-0 fixed right-0 [text-size-adjust: 100%] top-0 w-full [-webkit-font-smooting: antialiased] z-[1100] py-2 px-4"> 
@@ -98,11 +105,12 @@ export default function Page() {
       </div> 
       <div class="flex flex-col justify-items-center content-between pb-[40px] pt-[75px]">
         <CKEditor
-          editor={ ClassicEditor }
+          editor={ Editor }
           data={}
           onReady={ editor => {
           } }
           onChange={ ( event, editor ) => {
+            setEditorData(editor.getData());
           } }
         />
       </div>
