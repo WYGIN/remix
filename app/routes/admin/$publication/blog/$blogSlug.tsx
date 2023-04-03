@@ -67,9 +67,8 @@ export async function publish({ title, body, featuredImage, description, categor
 
 export async function loader(args: LoaderArgs) {
 
-  if(isAuthenticated)
 
-}
+
 
 export default function Page() {
   const data = useLoaderData<typeof loader>();
