@@ -117,7 +117,7 @@ export default function Page() {
     setEditorData(data.body);
     setSlug(data.slug);
     setTaxonomy([data.taxonomy.category1, data.taxonomy.category2]);
-    setTags(data.tags.map((item) => {
+    setTags(data.TagsOnPost.tags.map((item) => {
       return item.name
     });
     setDescription(data.description);
