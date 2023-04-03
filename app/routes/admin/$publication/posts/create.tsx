@@ -1,5 +1,10 @@
 import { prisma } from '@utils/prisma';
 import { useLoaderData } from "@remix-run/react";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import TextField from '@mui/material/TextField';
+import TagInput from '@components/TagInput';
+import TaxonomyInput from '@components/TaxonomyInput';
+import JsonEditor from '@components/JsonEditor';
 
 export async function action({ request }: ActionArgs) {
   const data = await request.formData();
@@ -135,6 +140,4 @@ export default function Page() {
   </div>
   );
 }
-
-
 
