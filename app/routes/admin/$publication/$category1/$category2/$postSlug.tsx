@@ -22,7 +22,10 @@ export async function loader(args: LoaderArgs) {
         category1: args.category1,
         category2: args.category2
       },
-      slug: args.postSlug;
+      slug: args.postSlug,
+      postOnPublication: {
+        publication: args.publication,
+      },
     }
   });
 
