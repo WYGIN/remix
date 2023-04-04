@@ -1,10 +1,10 @@
-import { prisma } from '@utils/prisma';
+import { prisma } from '~/utils/prisma';
 import { useLoaderData } from "@remix-run/react";
-import Header from '@components/Header';
-import Footer from '@components/Footer';
-import Drawer from '@components/Drawer';
-import Sidebar from '@components/Sidebar';
-import Main from '@components/Main';
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
+import Drawer from '~/components/Drawer';
+import Sidebar from '~/components/Sidebar';
+import Main from '~/components/Main';
 
 export const loader = async ({ params }: LoaderArgs) => {
   const data = prisma.page.findUnique({
