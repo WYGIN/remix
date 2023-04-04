@@ -1,14 +1,14 @@
-import { prisma } from '@utils/prisma';
+import { prisma } from '~/utils/prisma';
 import { useLoaderData } from "@remix-run/react";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import TextField from '@mui/material/TextField';
-import Editor from '@components/CKEditor';
-import TagInput from '@components/TagInput';
-import TaxonomyInput from '@components/TaxonomyInput';
-import JsonEditor from '@components/JsonEditor';
+import Editor from '~/components/CKEditor';
+import TagInput from '~/components/TagInput';
+import TaxonomyInput from '~/components/TaxonomyInput';
+import JsonEditor from '~/components/JsonEditor';
 import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
-import { getAuthorByUsername } from '@prisma/Author';
+import { getAuthorByUsername } from '~/prisma/Author';
 
 enum Status {
   PUBLISHED
