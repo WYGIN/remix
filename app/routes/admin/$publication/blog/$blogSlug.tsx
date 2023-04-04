@@ -15,24 +15,36 @@ enum Status {
   DRAFT
 }
 
-export async function loader(args: LoaderArgs) {
-  const data = await prisma.post.findUnique({
-    where: {
-      slug: args.postSlug,
-      blogOnPublication: {
-        publication: args.publication,
-      },
-    }
-  });
-
-  return data;
+enum Role {
+  ADMIN
+  OWNER
 }
 
-export async function publish({ title, body, featuredImage, description, category1, category2, tags, slug, schema, status, authorId }) {
-  const prisma = await prisma.post.upsert({
+export async function loader(args: LoaderArgs) {
+  const { user, isAuthenticated, isLoading } = useAuth0();
+  let data = null;
+  if(isAuthenticated) {
+    data = await prisma.blog.findUnique({
+      where: {
+        slug: args.postSlug,
+      }
+    });
+    if(data.author.role === (Role.ADMIN || Role.OWNER))
+      return {
+        ...data,
+        authorised: true
+      };
+    return {authorised: false}
+  }
+  return {
+    authorised: false
+  };
+}
+
+export async function publish({ body, featuredImage, description, tags, slug, schema, status, authorId }) {
+  const prisma = await prisma.blog.upsert({
     where: {
       slug: slug,
-      
     },
     create: {
       body: body,
@@ -64,11 +76,6 @@ export async function publish({ title, body, featuredImage, description, categor
     }
   });
 }
-
-export async function loader(args: LoaderArgs) {
-
-
-
 
 export default function Page() {
   const data = useLoaderData<typeof loader>();
@@ -142,7 +149,10 @@ export default function Page() {
                   const title = doc.getElementsByTagName('h1')[0].innerText; 
                   const featuredImage = doc.getElementsByTagName('img')[0].getAttribute("srcset"); 
                   const body = doc.body.removeChild(title).innerHtml;
-                  publish(editorData, featuredImage, description, texonomy[0], taxonomy[1], tags, slug, schema, Status.PUBLISHED, getAuthorByUsername(user.username));
+                  if(data.authorised)
+                    publish(editorData, featuredImage, description, tags, slug, schema, Status.PUBLISHED, getAuthorByUsername(user.username));
+                  else
+                    alert("unable to publish due to unauthorised access");
                 }}> 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> 
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /> 
