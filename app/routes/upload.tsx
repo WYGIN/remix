@@ -1,5 +1,5 @@
 import Jimp from "jimp";
-import { githubPut } from '@scripts/Github';
+import { githubPut } from '~/scripts/Github';
 
 export const action = async ({request}: ActionArgs) => {
    const data = await request.formData(); 
