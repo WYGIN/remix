@@ -19,12 +19,14 @@ export const loader = async ({ params }: LoaderArgs) => {
 export default function Page() {
   const data = useLoaderData<typeof loader>();
   return(
+    <>
     <Header />
     <div>
       <Drawer></Drawer>
-      <Main />
+      <Main></Main>
       <Sidebar></Sidebar>
     </div>
-    <Footer />
+    <Footer></Footer>
+    </>
   )
 }
