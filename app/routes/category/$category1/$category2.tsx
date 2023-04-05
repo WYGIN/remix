@@ -1,15 +1,9 @@
 import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
+import { getPostsByTaxonomy } from '~/utils/post.server';
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const data = prisma.taxonomy.findUnique({
-    where: {
-      category: {
-        category1: parama.category1,
-        category2: params.category2,
-      }
-    }
-  });
+  const data = await getPostsByTaxonomy(params.category1, params.category2);
   
   return data;
 }
