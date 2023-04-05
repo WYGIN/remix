@@ -1,5 +1,20 @@
 import { getAccountNameFromSocial, getAccountFromSocial } from '@utils/Social';
 export default function Footer({footer}) {
+   const items = (item, index) = {
+       if(item.length !== index) {
+         return(
+           <li className="mb-4" key{index}>
+             <a href={subitem.slug} className="hover:underline">{subitem.name}</a>
+           </li>
+         )
+       } else {
+         return (
+           <li>
+             <a href={subitem.slug} className="hover:underline">{subitem.name}</a>
+           </li>
+         )
+       }                
+   }
   return(
     <footer className="bg-white dark:bg-gray-900">
       <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
@@ -17,21 +32,7 @@ export default function Footer({footer}) {
                   <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white" key={index}>{item.label}</h2>
                   <ul className="text-gray-600 dark:text-gray-400 font-medium">
                     { item.items.map((subitem, index) => (
-                      {  if(item.length !== index) {
-                           return(
-                             <li className="mb-4" key{index}>
-                               <a href={subitem.slug} className="hover:underline">{subitem.name}</a>
-                             </li>
-                           )
-                         } else {
-                           return (
-                             <li>
-                               <a href={subitem.slug} className="hover:underline">{subitem.name}</a>
-                             </li>
-                           )
-                         }
-                       }
-                    )}
+                      { items(subitem, index) }
                   </ul>
                   </div>
                 )}
