@@ -1,4 +1,4 @@
-import { getAccountNameFromSocial, getAccountFromSocial } from '~/utils/Social';
+import { getAccountNameFromSocial, getAccountFromSocial } from '~/utils/Social.server';
 export default function Footer({footer}) {
    const items = (item, subitem, index) => {
        if(item.length !== index) {
