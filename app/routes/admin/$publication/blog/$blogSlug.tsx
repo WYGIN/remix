@@ -9,6 +9,7 @@ import JsonEditor from '~/components/JsonEditor';
 import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { getAuthorByUsername } from '~/prisma/Author';
+import { getBlogBySlugWithAuth, upsertBlog } from '~/utils/blog.server';
 
 enum Status {
   PUBLISHED
@@ -24,17 +25,8 @@ export async function loader(args: LoaderArgs) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   let data = null;
   if(isAuthenticated) {
-    data = await prisma.blog.findUnique({
-      where: {
-        slug: args.postSlug,
-      }
-    });
-    if(data.author.role === (Role.ADMIN || Role.OWNER))
-      return {
-        ...data,
-        authorised: true
-      };
-    return {authorised: false}
+    data = await getBlogBySlugWithAuth (args.blogSlug);
+    return data;
   }
   return {
     authorised: false
@@ -58,23 +50,8 @@ export async function publish({ body, featuredImage, description, tags, slug, sc
         connect: {
           id: authorId,
         }
-      }
-    },
-    update: {
-      body: body,
-      featuredImage: featuredImage,
-      description: description,
-      tags: tags,
-      slug: slug,
-      schema: schema,
-      status: status,
-      author: {
-        connect: {
-          id: authorId
-        }
-      }
-    }
-  });
+
+
 }
 
 export default function Page() {
