@@ -111,4 +111,13 @@ export upsertPost = async ({ body, featuredImage, description, category1, catego
 
   return prisma;
 }
-p
+
+export const getPostsByTag = async ({ tagSlug }) => {
+  const data = await prisma.tag.findUniue({
+    where: {
+      slug: tagSlug
+    }
+  });
+
+  return data.postsOnTag.posts;
+}
