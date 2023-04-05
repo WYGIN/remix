@@ -35,20 +35,12 @@ export async function loader(args: LoaderArgs) {
 
 export async function publish({ body, featuredImage, description, tags, slug, schema, status, authorId }) {
   const prisma = await prisma.blog.upsert({
-    w
-      slug: slug,
+
+
     },
-    create: {
+
       body: body,
-      featuredImage: featuredImage,
-      description: description,
-      tags: tags,
-      slug: slug,
-      schema: schema,
-      status: status,
-      author: {
-        connect: {
-          id: authorId,
+
 
 
 
