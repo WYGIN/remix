@@ -11,9 +11,10 @@ export default function Footer({footer}) {
               </a>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
-              <div>
+              
                 { footer.items.map((item, index) => (
-                  <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white" key={index}>item.label</h2>
+                  <div>
+                  <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white" key={index}>{item.label}</h2>
                   <ul className="text-gray-600 dark:text-gray-400 font-medium">
                     { item.items.map((subitem, index) => (
                       {  if(item.length !== index) {
@@ -32,8 +33,9 @@ export default function Footer({footer}) {
                        }
                     )}
                   </ul>
+                  </div>
                 )}
-              </div>
+              
           </div>
       </div>
       <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
