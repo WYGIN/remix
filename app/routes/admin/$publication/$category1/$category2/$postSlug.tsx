@@ -7,7 +7,6 @@ import TaxonomyInput from '~/components/TaxonomyInput';
 import JsonEditor from '~/components/JsonEditor';
 import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
-import { getAuthorByUsername } from '~/prisma/Author';
 import { getPostBySlugWithAuth, upsertPost } from '~/utils/post.server';
 
 enum Status {
