@@ -1,6 +1,6 @@
 import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
-import { upsertPublication } from '~/utils/publication';
+import { upsertPublication } from '~/utils/publication.server';
 
 export async function action({ request }: ActionArgs) {
   const form = request.formData();
