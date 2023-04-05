@@ -33,12 +33,11 @@ export async function loader(args: LoaderArgs) {
   }
 }
 
-export async function publish({ body, featuredImage, description, category1, category2, tags, slug, schema, status, authorId }) {
+export async function publish({ body, featuredImage, description, tags, slug, schema, status, authorId }) {
 
-    where: {
+const data = await upsertPage(body, featuredImage, description, tags, slug, schema, status, authorId );
 
-
-
+return data;
 
 }
 
