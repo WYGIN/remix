@@ -12,7 +12,7 @@ export default function Drawer({ drawer }) {
                 {item.name}
               </a>
             </li>
-          )}
+          )) }
         </ul>
       </div>
       <div className="block"></div>
