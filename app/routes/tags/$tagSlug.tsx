@@ -1,12 +1,9 @@
 import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
+import { getPostsByTag } from '~/utils/post.server';
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const data = prisma.tag.findUnique({
-    where: {
-      slug: parama.tagSlug,
-    }
-  });
+  const data = await getPostsByTag(params.tagSlug);
   
   return data;
 }
