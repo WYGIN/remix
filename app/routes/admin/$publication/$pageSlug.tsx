@@ -34,11 +34,10 @@ export async function loader(args: LoaderArgs) {
 }
 
 export async function publish({ body, featuredImage, description, category1, category2, tags, slug, schema, status, authorId }) {
-  const prisma = await prisma.post.upsert({
-    where: {
-      slug: slug,
 
-    create: {
+    where: {
+
+
 
 
 }
