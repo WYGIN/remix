@@ -24,11 +24,9 @@ enum Role {
 export async function loader(args: LoaderArgs) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   if(isAuthenticated) {
-    const data = await prisma.post.find)Uniq u)e)({
-      where: {
-        slug: args.postSlug,
-      }
-    });
+    const data = await getPageBySlugWithAuth (args.pageSlug);
+    
+    return data;
   }
   return {
     authorised: false
@@ -50,25 +48,8 @@ export async function publish({ body, featuredImage, description, category1, cat
       status: status,
       author: {
         connect: {
-          id: authorId
+
         }
-      }
-    },
-    update: {
-      body: body,
-      featuredImage: featuredImage,
-      description: description,
-      tags: tags,
-      slug: slug,
-      schema: schema,
-      status: status,
-      author: {
-        connect: {
-          id: authorId
-        }
-      }
-    }
-  });
 }
 
 export async function loader(args: LoaderArgs) {
