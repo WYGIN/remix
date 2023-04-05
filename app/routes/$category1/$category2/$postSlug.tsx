@@ -1,4 +1,3 @@
-import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
 import { getPostsBySlug } from '~/utils/post.server';
 
