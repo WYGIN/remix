@@ -19,9 +19,9 @@ enum Status {
 export async function loader(args: LoaderArgs) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   if(isAuthenticated) {
-    const data =
+    const data = await getPostBySlugWithAuth (args.category1, args.category2, args.slug);
 
-
+    return data;
 
      
   }
@@ -65,36 +65,7 @@ export async function publish({ body, featuredImage, description, category1, cat
           id: authorId
         }
       }
-    },
-    update: {
-      body: body,
-      featuredImage: featuredImage,
-      description: description,
-      category: {
-        connectOrCreate: {
-          where: {
-            category: {
-              category1: category1,
-              category2: category2
-            },
-          },
-          create: {
-            category1: category1,
-            category2: category2
-          }
-        },
-      },
-      tags: tags,
-      slug: slug,
-      schema: schema,
-      status: status,
-      author: {
-        connect: {
-          id: authorId
-        }
-      }
-    }
-  });
+
 }
 
 
