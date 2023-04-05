@@ -1,10 +1,10 @@
 import { prisma } from '~/utils/prisma.server';
 
 enum Platform {
-  YOUTUBE 
-  INSTAGRAM 
-  GITHUB 
-  FACEBOOK 
+  YOUTUBE,
+  INSTAGRAM,
+  GITHUB,
+  FACEBOOK,
   TWITTER
 }
 
