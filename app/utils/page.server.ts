@@ -11,7 +11,7 @@ export const getPageBySlug = async ({ pageSlug }) => {
   return data;
 }
 
-export const upsertPageBySlug = async ({ pageSlug }) => {
+export const getPageBySlugWithAuth = async ({ pageSlug }) => {
      const data = await prisma.page.findUnique({ 
        where: { 
          slug: pageSlug,
@@ -26,4 +26,40 @@ export const upsertPageBySlug = async ({ pageSlug }) => {
        return { 
          authorised: false 
        }
+}
+
+export const upsertPage = async ({ body, featuredImage, description, tags, slug, schema, status, authorId }) => {
+   const prisma = await prisma.page.upsert({ 
+     where: { 
+       slug: slug, 
+     }, 
+     create: { 
+       body: body, 
+       featuredImage: featuredImage, 
+       description: description, 
+       tags: tags, 
+       slug: slug, 
+       schema: schema, 
+       status: status, 
+       author: { 
+         connect: { 
+           id: authorId 
+         } 
+       } 
+     }, 
+     update: { 
+       body: body, 
+       featuredImage: featuredImage, 
+       description: description, 
+       tags: tags, 
+       slug: slug, 
+       schema: schema, 
+       status: status, 
+       author: { 
+         connect: { 
+           id: authorId 
+         } 
+       } 
+     } 
+   });
 }
