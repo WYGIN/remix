@@ -21,9 +21,7 @@ export async function loader(args: LoaderArgs) {
   if(isAuthenticated) {
     const data = await getPostBySlugWithAuth (args.category1, args.category2, args.slug);
 
-    return data;
-
-     
+    return data; 
   }
   
   return {
@@ -32,28 +30,7 @@ export async function loader(args: LoaderArgs) {
 }
 
 export async function publish({ body, featuredImage, description, category1, category2, tags, slug, schema, status, authorId }) {
-  const prisma = await prisma.post.upsert({
-    where: {
-      category1: category1,
-      category2: category2,
-      slug: slug
-    },
-    create: {
-      body: body,
-      featuredImage: featuredImage,
-      description: description,
-      category: {
-        connectOrCreate: {
-          where: {
-            category: {
-
-              category2: category2,
-            },
-
-          create: {
-
-            category2: category2,
-
+  const prisma = await upsertPost(body, featuredImage, description, category1, category2, tags, slug, schema, status, authorId);
 
 }
 
