@@ -7,7 +7,6 @@ import TaxonomyInput from '~/components/TaxonomyInput';
 import JsonEditor from '~/components/JsonEditor';
 import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
-import { getAuthorByUsername } from '~/prisma/Author';
 import { getBlogBySlugWithAuth, upsertBlog } from '~/utils/blog.server';
 
 enum Status {
@@ -33,12 +32,9 @@ export async function loader(args: LoaderArgs) {
 }
 
 export async function publish({ body, featuredImage, description, tags, slug, schema, status, authorId }) {
-  const prisma = await upsertBlog (body, featuredImage, description, tags, slug, schema, status, authorId);
+  const data = await upsertBlog (body, featuredImage, description, tags, slug, schema, status, authorId);
 
-  return prisma;
-
-
-
+  return data;
 
 }
 
