@@ -121,3 +121,17 @@ export const getPostsByTag = async ({ tagSlug }) => {
 
   return data.postsOnTag.posts;
 }
+
+export const getPostsByTaxonomy = async ({ category1, category2 }) => {
+  const data = prisma.taxonomy.findUnique({
+    where: {
+      category: {
+        category1: category1,
+        category2: category2
+      }
+    }
+  });
+
+  return data.postsOnTaxonomy.posts;
+
+}
