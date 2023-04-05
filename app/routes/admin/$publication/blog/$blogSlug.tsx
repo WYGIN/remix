@@ -1,4 +1,4 @@
-import { prisma } from '~/utils/prisma';
+import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import TextField from '@mui/material/TextField';
