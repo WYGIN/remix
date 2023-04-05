@@ -5,14 +5,10 @@ import Footer from '~/components/Footer';
 import Drawer from '~/components/Drawer';
 import Sidebar from '~/components/Sidebar';
 import Main from '~/components/Main';
+import { getPageBySlug } from '~/utils/page.server';
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const data = prisma.page.findUnique({
-    where: {
-      slug: parama.pageSlug,
-    }
-  });
-  
+  const data = getPageBySlug(parama.pageSlug);
   return data;
 }
 
