@@ -1,4 +1,4 @@
-import { prisma } from '~/utils/prisma';
+import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
 import Header from '~/components/Header';
 import Footer from '~/components/Footer';
