@@ -1,9 +1,9 @@
 import { getAccountNameFromSocial, getAccountFromSocial } from '@utils/Social';
 export default function Footer({footer}) {
-   const items = (item, index) = {
+   const items = (item, subitem, index) => {
        if(item.length !== index) {
          return(
-           <li className="mb-4" key{index}>
+           <li className="mb-4" key={index}>
              <a href={subitem.slug} className="hover:underline">{subitem.name}</a>
            </li>
          )
@@ -32,7 +32,7 @@ export default function Footer({footer}) {
                   <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white" key={index}>{item.label}</h2>
                   <ul className="text-gray-600 dark:text-gray-400 font-medium">
                     { item.items.map((subitem, index) => (
-                      { items(subitem, index) }
+                      { items(item ,subitem, index) }
                   </ul>
                   </div>
                 )}
