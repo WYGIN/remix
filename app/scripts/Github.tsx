@@ -4,7 +4,7 @@ const octokit = new Octokit({
    auth: '' 
  }); 
   
- export const gitput = async ({ buffer, width, height, username, email, filename, path }) => { 
+ export const githubPut = async ({ buffer, width, height, username, email, filename, path }) => { 
    const response = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', { 
      owner: 'OWNER', 
      repo: 'REPO', 
@@ -23,7 +23,7 @@ const octokit = new Octokit({
    return `https://wygin.me/${response.content.path}`; 
  } 
   
- export const gitget = async ({ path }) => { 
+ export const githubGet = async ({ path }) => { 
    const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', { 
      owner: 'OWNER', 
      repo: 'REPO', 
