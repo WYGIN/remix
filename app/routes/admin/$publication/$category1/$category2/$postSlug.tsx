@@ -46,25 +46,14 @@ export async function publish({ body, featuredImage, description, category1, cat
         connectOrCreate: {
           where: {
             category: {
-              category1: category1,
+
               category2: category2,
             },
-          },
+
           create: {
-            category1: category1,
+
             category2: category2,
-          },
-        },
-      },
-      tags: tags,
-      slug: slug,
-      schema: schema,
-      status: status,
-      author: {
-        connect: {
-          id: authorId
-        }
-      }
+
 
 }
 
