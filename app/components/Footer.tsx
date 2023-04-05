@@ -31,8 +31,10 @@ export default function Footer({footer}) {
                   <div>
                   <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white" key={index}>{item.label}</h2>
                   <ul className="text-gray-600 dark:text-gray-400 font-medium">
-                    { item.items.map((subitem, index) => (
-                      { items(item ,subitem, index) }
+                    { item.items.map((subitem, index) => { 
+                        items(item ,subitem, index); 
+                      }
+                    )}
                   </ul>
                   </div>
                 )}
