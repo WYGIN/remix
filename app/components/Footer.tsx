@@ -37,7 +37,7 @@ export default function Footer({footer}) {
                     )}
                   </ul>
                   </div>
-                )}
+                ))}
               
           </div>
       </div>
