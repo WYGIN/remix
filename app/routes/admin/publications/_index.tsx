@@ -1,25 +1,11 @@
 import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
+import { upsertPublication } from '~/utils/publication';
 
 export async function action({ request }: ActionArgs) {
-  const data = await request.formData();
-  const prisma = await prisma.publication.upsert({
-    where: {
-      slug: data.get('slug')
-    },
-    create: {
-      slug: data.get('slug'),
-      name: data.get('name'),
-      logo: data.get('logo'),
-      description: data.get('description')
-    },
-    update: {
-      slug: data.get('slug'),
-      name: data.get('name'),
-      logo: data.get('logo'),
-      description: data.get('description')
-    }
-  });
+  const form = request.formData();
+  const data = await upsertPublication(form.slug, form.name, form.logo, form.description);
+  return data;
 }
 export default function Page() {
   
