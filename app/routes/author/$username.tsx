@@ -1,12 +1,9 @@
 import { prisma } from '~/utils/prisma.server';
 import { useLoaderData } from "@remix-run/react";
+import { getAuthorByUsername } from '~/utils/user.server';
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const data = prisma.user.findUnique({
-    where: {
-      username: params.username,
-    }
-  });
+  const data = await getAuthorByUsername (params.username);
   
   return data;
 }
