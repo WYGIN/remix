@@ -9,6 +9,7 @@ import JsonEditor from '~/components/JsonEditor';
 import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { getAuthorByUsername } from '~/prisma/Author';
+import { getPageBySlugWithAuth, upsertPage } from '~/utils/page.server';
 
 enum Status {
   PUBLISHED
@@ -23,20 +24,11 @@ enum Role {
 export async function loader(args: LoaderArgs) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   if(isAuthenticated) {
-    const data = await prisma.post.findUnique({
+    const data = await prisma.post.find)Uniq u)e)({
       where: {
         slug: args.postSlug,
       }
     });
-    if(data.author.role === (Role.ADMIN || Role.OWNER))
-     return {
-       authorised: true,
-       ...data
-     }
-    else
-      return {
-        authorised: false
-      }
   }
   return {
     authorised: false
