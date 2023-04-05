@@ -34,12 +34,9 @@ export async function loader(args: LoaderArgs) {
 }
 
 export async function publish({ body, featuredImage, description, tags, slug, schema, status, authorId }) {
-  const prisma = await prisma.blog.upsert({
+  const prisma = 
 
 
-    },
-
-      body: body,
 
 
 
