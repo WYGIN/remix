@@ -19,10 +19,8 @@ enum Status {
 export async function loader(args: LoaderArgs) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   if(isAuthenticated) {
-    const data = await prisma.post.findUnique({
-      where: 
+    const data =
 
-          category1: args.category1,
 
 
      
