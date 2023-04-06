@@ -7,15 +7,17 @@ import TaxonomyInput from '~/components/TaxonomyInput';
 import JsonEditor from '~/components/JsonEditor';
 import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
+import { getAuthorIdFromUsername } from '~/utils/server';
 import { getBlogBySlugWithAuth, upsertBlog } from '~/utils/blog.server';
+import type { ActionArgs } from '@remix-run/cloudflare';
 
 enum Status {
-  PUBLISHED
+  PUBLISHED,
   DRAFT
 }
 
 enum Role {
-  ADMIN
+  ADMIN,
   OWNER
 }
 
@@ -23,7 +25,7 @@ export async function loader(args: LoaderArgs) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   let data = null;
   if(isAuthenticated) {
-    data = await getBlogBySlugWithAuth (args.blogSlug);
+    data = await getBlogBySlugWithAuth(args.blogSlug);
     return data;
   }
   return {
@@ -31,8 +33,10 @@ export async function loader(args: LoaderArgs) {
   };
 }
 
-export async function publish({ body, featuredImage, description, tags, slug, schema, status, authorId }) {
-  const data = await upsertBlog (body, featuredImage, description, tags, slug, schema, status, authorId);
+export async function action({ request }: ActionArgs) {
+  const body = await request.formData();
+  const authorId = getAuthorIdFromUsername(body.get('username'));
+  const data = await upsertBlog (body.get('body'), body.get('featuredImage'), body.get('description'), body.get('tags'), body.get('slug'), body.get('schema'), Status.PUBLISHED, authorId);
 
   return data;
 
@@ -47,6 +51,10 @@ export default function Page() {
   const [description, setDescription] = useState('');
   const [schema, setSchema] = useState<Json>();
   const { user, isAuthenticated, isLoading } = useAuth0();
+
+  const parser = new DOMParser();  
+  const doc = parser.parseFromString(editorData, 'text/html');  
+  const featuredImage = doc.getElementsByTagName('img')[0].getAttribute("srcset"); 
     
   if(data) {
     setEditorData(data.body);
@@ -59,7 +67,7 @@ export default function Page() {
   }
 
   return(
-    <div class="flex flex-col items-center justify-center"> 
+    <Form class="flex flex-col items-center justify-center"> 
       <div id="header" class="backdrop-blur bg-[#FFFFFFCC] h-[64px] border-b border-solid border-gray box-border text-[#2d3843] [color-scheme: light] flex flex-row shrink-0 text-base left-0 fixed right-0 [text-size-adjust: 100%] top-0 w-full [-webkit-font-smooting: antialiased] z-[1100] py-2 px-4"> 
         <div class="items-center box-border text-[#2d3843] [color-scheme: light] flex text-base min-h-[48px] relative [text-size-adjust: 100%]"> 
           <button class="items-center [appearance: none] bg-[#00000000] border border-[#e0e3e7] box-border [color-scheme: light] [cursor: pointer] flex justify-center p-2 ml-px relative [vertical-align: middle] h-[34px] w-[34px] rounded-[10px]"> 
@@ -71,7 +79,7 @@ export default function Page() {
         </div> 
         <div class="flex-auto block"></div> 
         <div class="flex items-center justify-center"> 
-          <button class="ml-[10px] w-[34px] flex items-center justify-center h-[34px] border rounded-[10px] border-[#e0e3e7] box-border [color-scheme: light] relative [vertical-align: middle]"> 
+          <button type="submit" class="ml-[10px] w-[34px] flex items-center justify-center h-[34px] border rounded-[10px] border-[#e0e3e7] box-border [color-scheme: light] relative [vertical-align: middle]"> 
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> 
               <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /> 
             </svg> 
@@ -80,6 +88,7 @@ export default function Page() {
       </div> 
       <div class="flex flex-col justify-items-center content-between pb-[40px] pt-[75px]">
         <CKEditor
+          name="body"
           editor={ Editor }
           data={editorData}
           onReady={ editor => {
@@ -104,17 +113,7 @@ export default function Page() {
             </div> 
             <div class="flex-auto block"></div> 
             <div class="flex items-center justify-center"> 
-              <button class="ml-[10px] w-[34px] flex items-center justify-center h-[34px] border rounded-[10px] border-[#e0e3e7] box-border [color-scheme: light] relative [vertical-align: middle]" id="publish" onClick={() => {
-                  const parser = new DOMParser(); 
-                  const doc = parser.parseFromString(editorData, 'text/html'); 
-                  const title = doc.getElementsByTagName('h1')[0].innerText; 
-                  const featuredImage = doc.getElementsByTagName('img')[0].getAttribute("srcset"); 
-                  const body = doc.body.removeChild(title).innerHtml;
-                  if(data.authorised)
-                    publish(editorData, featuredImage, description, tags, slug, schema, Status.PUBLISHED, getAuthorByUsername(user.username));
-                  else
-                    alert("unable to publish due to unauthorised access");
-                }}> 
+              <button class="ml-[10px] w-[34px] flex items-center justify-center h-[34px] border rounded-[10px] border-[#e0e3e7] box-border [color-scheme: light] relative [vertical-align: middle]" id="publish" > 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> 
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /> 
                 </svg> 
@@ -122,26 +121,28 @@ export default function Page() {
               </button> 
             </div> 
           </header>
-          <TextField id="post-slug" label="Slug" variant="outlined" value={slug} onChange={
+          <TextField name="slug" id="post-slug" label="Slug" variant="outlined" value={slug} onChange={
               (event: React.ChangeEvent<HTMLInputElement>) => {
                 setSlug(event.target.value);
               }
             } />
-          <TextField id="post-description" label="Description" variant="outlined" value={description} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          <TextField name="description" id="post-description" label="Description" variant="outlined" value={description} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDescription(event.target.value);
             }} /> 
-          <TagInput id="post-tags" value={tags} onAdd={(chip) => {
+          <TagInput name="tags" id="post-tags" value={tags} onAdd={(chip) => {
               tags.push(event.target.value);
             }} onDelete={(chip, index) =>  {
               tags.splice(index,1);
             }} />
-          <JsonEditor id="post-schema" defaultValue={schema} onChange={(value, event) => {
+          <JsonEditor name="schema" id="post-schema" defaultValue={schema} onChange={(value, event) => {
               setSchema(eval(value));
             }} /> 
+          <TextField name="username" className="hidden">{user.username}</TextField> 
+          <TextField name="featuredImage" className="hidden">{featuredImage}</TextField>
         </div> 
       <div class="block"></div> 
     </aside> 
-  </div>
+  </Form>
   );
 }
 
