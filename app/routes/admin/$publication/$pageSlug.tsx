@@ -42,12 +42,6 @@ export async function action({ request }: ActionArgs) {
 
 }
 
-export async function loader(args: LoaderArgs) {
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  if(isAuthenticated)
-    return json({ status: 200 })
-  throw json({ status: 401 })
-}
 
 export default function Page() {
   const data = useLoaderData<typeof loader>();
