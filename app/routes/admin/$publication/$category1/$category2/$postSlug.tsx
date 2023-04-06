@@ -10,7 +10,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { getPostBySlugWithAuth, upsertPost } from '~/utils/post.server';
 
 enum Status {
-  PUBLISHED
+  PUBLISHED,
   DRAFT
 }
 
@@ -27,8 +27,10 @@ export async function loader(args: LoaderArgs) {
   }
 }
 
-export async function publish({ body, featuredImage, description, category1, category2, tags, slug, schema, status, authorId }) {
-  const prisma = await upsertPost(body, featuredImage, description, category1, category2, tags, slug, schema, status, authorId);
+export async function action({ request }: ActionArgs) {
+  const body = await request.formData();
+  const userId = await getAuthorIdFromUsername(body.get('username'));
+  const data = await upsertPost(body.get('body'), body.get('featuredImage'), body.get('description'), body.get('category1'), body.get('category2'), body.get('tags'), body.get('slug'), body.get('schema'), Status.PUBLISHED, authorId);
 
 }
 
@@ -43,6 +45,10 @@ export default function Page() {
   const [description, setDescription] = useState('');
   const [schema, setSchema] = useState<Json>();
   const { user, isAuthenticated, isLoading } = useAuth0();
+
+  const parser = new DOMParser(); 
+  const doc = parser.parseFromString(editorData, 'text/html'); 
+  const featuredImage = doc.getElementsByTagName('img')[0].getAttribute("srcset"); 
     
   if(data) {
     setEditorData(data.body);
@@ -56,7 +62,7 @@ export default function Page() {
   }
 
   return(
-    <div class="flex flex-col items-center justify-center"> 
+    <Form class="flex flex-col items-center justify-center"> 
       <div id="header" class="backdrop-blur bg-[#FFFFFFCC] h-[64px] border-b border-solid border-gray box-border text-[#2d3843] [color-scheme: light] flex flex-row shrink-0 text-base left-0 fixed right-0 [text-size-adjust: 100%] top-0 w-full [-webkit-font-smooting: antialiased] z-[1100] py-2 px-4"> 
         <div class="items-center box-border text-[#2d3843] [color-scheme: light] flex text-base min-h-[48px] relative [text-size-adjust: 100%]"> 
           <button class="items-center [appearance: none] bg-[#00000000] border border-[#e0e3e7] box-border [color-scheme: light] [cursor: pointer] flex justify-center p-2 ml-px relative [vertical-align: middle] h-[34px] w-[34px] rounded-[10px]"> 
@@ -77,6 +83,7 @@ export default function Page() {
       </div> 
       <div class="flex flex-col justify-items-center content-between pb-[40px] pt-[75px]">
         <CKEditor
+          name="body"
           editor={ Editor }
           data={editorData}
           onReady={ editor => {
@@ -101,17 +108,7 @@ export default function Page() {
             </div> 
             <div class="flex-auto block"></div> 
             <div class="flex items-center justify-center"> 
-              <button class="ml-[10px] w-[34px] flex items-center justify-center h-[34px] border rounded-[10px] border-[#e0e3e7] box-border [color-scheme: light] relative [vertical-align: middle]" id="publish" onClick={() => {
-                  const parser = new DOMParser(); 
-                  const doc = parser.parseFromString(editorData, 'text/html'); 
-                  const title = doc.getElementsByTagName('h1')[0].innerText; 
-                  const featuredImage = doc.getElementsByTagName('img')[0].getAttribute("srcset"); 
-                  const body = doc.body.removeChild(title).innerHtml;
-                  if(isAuthenticated && data.authorised)
-                    publish(editerData, featuredImage, description, texonomy[0], taxonomy[1], tags, slug, schema, Status.PUBLISHED, getAuthorByUsername(user.username));
-                  else
-                    alert("unable to publish post due to unauthorised access")
-                }}> 
+              <button type="submit" class="ml-[10px] w-[34px] flex items-center justify-center h-[34px] border rounded-[10px] border-[#e0e3e7] box-border [color-scheme: light] relative [vertical-align: middle]" id="publish"> 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> 
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /> 
                 </svg> 
@@ -119,32 +116,34 @@ export default function Page() {
               </button> 
             </div> 
           </header>
-          <TextField id="post-slug" label="Slug" variant="outlined" value={slug} onChange={
+          <TextField name="slug" id="post-slug" label="Slug" variant="outlined" value={slug} onChange={
               (event: React.ChangeEvent<HTMLInputElement>) => {
                 setSlug(event.target.value);
               }
             } />
-          <TextField id="post-description" label="Description" variant="outlined" value={description} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          <TextField name="description" id="post-description" label="Description" variant="outlined" value={description} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDescription(event.target.value);
             }} /> 
-          <TagInput id="post-tags" value={tags} onAdd={(chip) => {
+          <TagInput name="tags" id="post-tags" value={tags} onAdd={(chip) => {
               tags.push(event.target.value);
             }} onDelete={(chip, index) =>  {
               tags.splice(index,1);
             }} /> 
-          <TaxonomyInput id="post-tax" value={taxonomy} onAdd={(chip) => {
+          <TaxonomyInput name="taxonomy" id="post-tax" value={taxonomy} onAdd={(chip) => {
               taxonomy.push(event.target.value);
             }} onDelete={(chip, index) =>  {
               taxonomy.splice(index,1);
             }} /> 
-          <JsonEditor id="post-schema" defaultValue={schema} onChange={(value, event) => {
+          <JsonEditor name="schema" id="post-schema" defaultValue={schema} onChange={(value, event) => {
               setSchema(eval(value));
-            }} /> 
+            }} />
+          <TextField name="username" className="hidden">{user.username}</TextField>
+          <TextField name="category1" className="hidden">{taxonomy[0]}</TextField>
+          <TextField name="category2" className="hidden">{taxonomy[1]}</TextField>
+          <TextField name="featuredImage" className="hidden">{featuredImage}</TextField>
         </div> 
       <div class="block"></div> 
     </aside> 
-  </div>
+  </Form>
   );
 }
-
-
